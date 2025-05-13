@@ -82,7 +82,7 @@ class UserController extends Controller
             'role' => 'required|string|max:15|min:3',
             'password' => 'required|string|min:6',
         ]);
-        Log::info('User updated successfully', ['user_id' => $id, 'data' => $data]);
+
 
        DB::beginTransaction();
         try {

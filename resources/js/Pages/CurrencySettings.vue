@@ -1,64 +1,38 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import {Link, router, useForm, usePage} from "@inertiajs/vue3";
+import { router, useForm, usePage,Link } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import { ref } from "vue";
 import { Dialog, DialogOverlay, DialogTitle } from "@headlessui/vue";
-import logo from "../../images/logo.png";
-
 // State
-const userData = ref(usePage().props.users);
+const userData = ref(usePage().props.currencies);
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
 const isSubmitting = ref(false);
 let editingUserId = null;
-
-// Form
-const data = useForm({
-    fullName: '',
-    userName: '',
-    phone: '',
-    email: '',
-    role: '',
-    password: '',
-});
-
 // Modal Control
 const openModal = () => {
     isModalOpen.value = true;
 };
-// const closeModal = () => {
-//     isModalOpen.value = false;
-//     isEditMode.value = false;
-//     editingUserId = null;
-//     data.reset();
-// };
-
 const closeModal = () => {
     if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
     }
-
     isModalOpen.value = false;
     isEditMode.value = false;
     editingUserId = null;
     data.reset();
-
-    // Ensure focus goes to a safe visible element (like the Add button)
-    setTimeout(() => {
-        const addButton = document.getElementById('add-user-btn');
-        if (addButton) addButton.focus();
-    }, 100);
 };
-
-
-
+// Form
+const data = useForm({
+    currency: '',
+});
 // Refresh User List
 const fetchUsers = () => {
     router.reload({
-        only: ['users'],
+        only: ['$currencies'],
         onSuccess: () => {
-            userData.value = usePage().props.users;
+            userData.value = usePage().props.currencies;
         }
     });
 };
@@ -67,11 +41,11 @@ const fetchUsers = () => {
 const handleSubmit = () => {
     isSubmitting.value = true;
     if (isEditMode.value) {
-        data.put(`/dashboard/users/${editingUserId}`, {
+        data.put(`/dashboard/settings/update-currency/${editingUserId}`, {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'User updated successfully',
+                    title: 'Currency updated successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -81,11 +55,11 @@ const handleSubmit = () => {
             onFinish: () => isSubmitting.value = false
         });
     } else {
-        data.post('/dashboard/users', {
+        data.post('/dashboard/settings/add-currency', {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'User added successfully',
+                    title: 'Currency added successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -98,15 +72,10 @@ const handleSubmit = () => {
 };
 
 // Prepare Edit
-const handleEdit = (id,fullName,userName,phone,email,role,password) => {
+const handleEdit = (id,currency) => {
     editingUserId = id;
     isEditMode.value = true;
-    data.fullName = fullName;
-    data.userName = userName;
-    data.phone = phone;
-    data.email = email;
-    data.role = role;
-    data.password = password;
+    data.currency = currency;
     openModal();
 
 };
@@ -126,7 +95,7 @@ const Toast = Swal.mixin({
 const handleDelete = (id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This user will be deleted permanently!",
+        text: "This Currency will be deleted permanently!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -134,10 +103,10 @@ const handleDelete = (id) => {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            router.get(`/dashboard/delete-user/${id}`)
+            router.get(`/dashboard/settings/delete-currency/${id}`)
             Toast.fire({
                 icon: "warning",
-                title: "User Deleted successfully"
+                title: "Currency Deleted successfully"
             });
         }
     });
@@ -145,11 +114,7 @@ const handleDelete = (id) => {
 
 // Table Headers
 const tableHeaders = [
-    { text: 'Full Name', value: 'fullName' },
-    { text: 'User Name', value: 'userName' },
-    { text: 'Phone', value: 'phone' },
-    { text: 'Email', value: 'email' },
-    { text: 'Role', value: 'role' },
+    { text: 'Currency', value: 'currency' },
     { text: 'Actions', value: 'actions' },
 ];
 </script>
@@ -157,9 +122,8 @@ const tableHeaders = [
 <template>
     <AdminLayout>
         <div>
-
             <div class="flex justify-between items-center">
-                <Link href="/dashboard" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
+                <Link href="/dashboard/settings" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
                     </svg>
@@ -172,7 +136,7 @@ const tableHeaders = [
                         <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
                     </svg>
 
-                    Add User
+                    Add Currency
                 </button>
             </div>
 
@@ -182,50 +146,15 @@ const tableHeaders = [
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
                     <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
-                            {{ isEditMode ? 'Edit User' : 'Add New User' }}
+                            {{ isEditMode ? 'Edit Currency' : 'Add Currency' }}
                         </DialogTitle>
 
                         <form @submit.prevent="handleSubmit" class="space-y-3">
                             <div>
-                                <label for="fullName" class="block text-sm font-medium">Full Name</label>
-                                <input v-model="data.fullName" type="text" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.fullName" class="text-red-500 text-sm">{{ data.errors.fullName }}</div>
+                                <label for="currency" class="block text-sm font-medium">Currency Name</label>
+                                <input v-model="data.currency" type="text" class="w-full border p-2 rounded" />
+                                <div v-if="data.errors.currency" class="text-red-500 text-sm">{{ data.errors.currency }}</div>
                             </div>
-
-                            <div>
-                                <label for="userName" class="block text-sm font-medium">User Name</label>
-                                <input v-model="data.userName" type="text" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.userName" class="text-red-500 text-sm">{{ data.errors.userName }}</div>
-                            </div>
-
-                            <div>
-                                <label for="phone" class="block text-sm font-medium">Phone</label>
-                                <input v-model="data.phone" type="text" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.phone" class="text-red-500 text-sm">{{ data.errors.phone }}</div>
-                            </div>
-
-                            <div>
-                                <label for="email" class="block text-sm font-medium">Email</label>
-                                <input v-model="data.email" type="email" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.email" class="text-red-500 text-sm">{{ data.errors.email }}</div>
-                            </div>
-
-                            <div>
-                                <label for="role" class="block text-sm font-medium">Role</label>
-                                <select v-model="data.role" class="w-full border p-2 rounded">
-                                    <option disabled value="">Select Role</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Moderator">Moderator</option>
-                                </select>
-                                <div v-if="data.errors.role" class="text-red-500 text-sm">{{ data.errors.role }}</div>
-                            </div>
-
-                            <div>
-                                <label for="password" class="block text-sm font-medium">Password</label>
-                                <input v-model="data.password" type="password" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.password" class="text-red-500 text-sm">{{ data.errors.password }}</div>
-                            </div>
-
                             <div class="flex justify-end space-x-2 mt-4">
                                 <button type="button" @click="closeModal" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-sm text-white">Cancel</button>
                                 <button
@@ -237,7 +166,7 @@ const tableHeaders = [
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                                     </svg>
-                                    {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update User' : 'Add User') }}
+                                    {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Submitting...') : (isEditMode ? 'Update' : 'Submit ') }}
                                 </button>
 
                             </div>
@@ -255,9 +184,9 @@ const tableHeaders = [
                 table-class-name="customize-table"
                 show-index
             >
-                <template #item-actions="{ id,fullName,userName,phone,email,role,password }">
+                <template #item-actions="{ id,currency}">
                     <div class="flex gap-2">
-                        <button @click="handleEdit(id,fullName,userName,phone,email,role,password)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
+                        <button @click="handleEdit(id,currency)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
                             Edit
                         </button>
                         <button @click="handleDelete(id)" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">
@@ -273,9 +202,16 @@ const tableHeaders = [
 <style scoped>
 ::v-deep(.customize-table) {
     --easy-table-header-font-size: 16px;
-    --easy-table-body-row-font-size: 16px;
+    --easy-table-body-row-font-size: 14px;
     --easy-table-header-font-color: #111827;
     --easy-table-body-row-font-color: #374151;
     --easy-table-border: 1px solid #e5e7eb;
+}
+::v-deep(.customize-table thead th:nth-child(3)),
+::v-deep(.customize-table tbody td:nth-child(3)) {
+    max-width: 200px;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 }
 </style>
