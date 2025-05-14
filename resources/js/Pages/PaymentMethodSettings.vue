@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { ref } from "vue";
 import { Dialog, DialogOverlay, DialogTitle } from "@headlessui/vue";
 // State
-const userData = ref(usePage().props.currencies);
+const userData = ref(usePage().props.payments);
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
 const isSubmitting = ref(false);
@@ -25,14 +25,14 @@ const closeModal = () => {
 };
 // Form
 const data = useForm({
-    currency: '',
+    payment: '',
 });
 // Refresh User List
 const fetchUsers = () => {
     router.reload({
-        only: ['$currencies'],
+        only: ['payments'],
         onSuccess: () => {
-            userData.value = usePage().props.currencies;
+            userData.value = usePage().props.payments ;
         }
     });
 };
@@ -41,11 +41,11 @@ const fetchUsers = () => {
 const handleSubmit = () => {
     isSubmitting.value = true;
     if (isEditMode.value) {
-        data.put(`/dashboard/settings/update-currency/${editingUserId}`, {
+        data.put(`/dashboard/settings/update-payment-method/${editingUserId}`, {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Currency updated successfully',
+                    title: 'Payment Method updated successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -55,11 +55,11 @@ const handleSubmit = () => {
             onFinish: () => isSubmitting.value = false
         });
     } else {
-        data.post('/dashboard/settings/add-currency', {
+        data.post('/dashboard/settings/add-payment-method', {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Currency added successfully',
+                    title: 'Payment Method added successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -72,10 +72,10 @@ const handleSubmit = () => {
 };
 
 // Prepare Edit
-const handleEdit = (id,currency) => {
+const handleEdit = (id,payment) => {
     editingUserId = id;
     isEditMode.value = true;
-    data.currency = currency;
+    data.payment = payment;
     openModal();
 
 };
@@ -95,7 +95,7 @@ const Toast = Swal.mixin({
 const handleDelete = (id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This Currency will be deleted permanently!",
+        text: "This Payment Method will be deleted permanently!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -103,10 +103,10 @@ const handleDelete = (id) => {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            router.get(`/dashboard/settings/delete-currency/${id}`)
+            router.get(`/dashboard/settings/delete-payment-method/${id}`)
             Toast.fire({
                 icon: "warning",
-                title: "Currency Deleted successfully"
+                title: "Payment Method Deleted successfully"
             });
         }
     });
@@ -114,7 +114,7 @@ const handleDelete = (id) => {
 
 // Table Headers
 const tableHeaders = [
-    { text: 'Currency', value: 'currency' },
+    { text: 'Payment Method', value: 'payment' },
     { text: 'Actions', value: 'actions' },
 ];
 </script>
@@ -133,10 +133,9 @@ const tableHeaders = [
 
                 <button @click="openModal" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
                     </svg>
-
-                    Add Currency
+                    Add Payment Method
                 </button>
             </div>
 
@@ -146,14 +145,14 @@ const tableHeaders = [
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
                     <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
-                            {{ isEditMode ? 'Edit Currency' : 'Add Currency' }}
+                            {{ isEditMode ? 'Edit Payment Method' : 'Add Payment Method' }}
                         </DialogTitle>
 
                         <form @submit.prevent="handleSubmit" class="space-y-3">
                             <div>
-                                <label for="currency" class="block text-sm font-medium">Currency Name</label>
-                                <input v-model="data.currency" type="text" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.currency" class="text-red-500 text-sm">{{ data.errors.currency }}</div>
+                                <label for="payment" class="block text-sm font-medium">Payment Method</label>
+                                <input v-model="data.payment" type="text" class="w-full border p-2 rounded" />
+                                <div v-if="data.errors.payment" class="text-red-500 text-sm">{{ data.errors.payment }}</div>
                             </div>
                             <div class="flex justify-end space-x-2 mt-4">
                                 <button type="button" @click="closeModal" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-sm text-white">Cancel</button>
@@ -168,7 +167,6 @@ const tableHeaders = [
                                     </svg>
                                     {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Submitting...') : (isEditMode ? 'Update' : 'Submit ') }}
                                 </button>
-
                             </div>
                         </form>
                     </div>
@@ -184,9 +182,9 @@ const tableHeaders = [
                 table-class-name="customize-table"
                 show-index
             >
-                <template #item-actions="{ id,currency}">
+                <template #item-actions="{ id,payment}">
                     <div class="flex gap-2">
-                        <button @click="handleEdit(id,currency)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
+                        <button @click="handleEdit(id,payment)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
                             Edit
                         </button>
                         <button @click="handleDelete(id)" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">

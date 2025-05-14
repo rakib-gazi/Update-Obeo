@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { ref } from "vue";
 import { Dialog, DialogOverlay, DialogTitle } from "@headlessui/vue";
 // State
-const userData = ref(usePage().props.currencies);
+const userData = ref(usePage().props.statuses);
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
 const isSubmitting = ref(false);
@@ -25,14 +25,14 @@ const closeModal = () => {
 };
 // Form
 const data = useForm({
-    currency: '',
+    status: '',
 });
 // Refresh User List
 const fetchUsers = () => {
     router.reload({
-        only: ['$currencies'],
+        only: ['statuses'],
         onSuccess: () => {
-            userData.value = usePage().props.currencies;
+            userData.value = usePage().props.statuses ;
         }
     });
 };
@@ -41,11 +41,11 @@ const fetchUsers = () => {
 const handleSubmit = () => {
     isSubmitting.value = true;
     if (isEditMode.value) {
-        data.put(`/dashboard/settings/update-currency/${editingUserId}`, {
+        data.put(`/dashboard/settings/update-reservation-status/${editingUserId}`, {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Currency updated successfully',
+                    title: 'Reservation Status updated successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -55,11 +55,11 @@ const handleSubmit = () => {
             onFinish: () => isSubmitting.value = false
         });
     } else {
-        data.post('/dashboard/settings/add-currency', {
+        data.post('/dashboard/settings/add-reservation-status', {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Currency added successfully',
+                    title: 'Reservation Status added successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -72,10 +72,10 @@ const handleSubmit = () => {
 };
 
 // Prepare Edit
-const handleEdit = (id,currency) => {
+const handleEdit = (id,status) => {
     editingUserId = id;
     isEditMode.value = true;
-    data.currency = currency;
+    data.status = status;
     openModal();
 
 };
@@ -95,7 +95,7 @@ const Toast = Swal.mixin({
 const handleDelete = (id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This Currency will be deleted permanently!",
+        text: "This Reservation Status will be deleted permanently!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -103,10 +103,10 @@ const handleDelete = (id) => {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            router.get(`/dashboard/settings/delete-currency/${id}`)
+            router.get(`/dashboard/settings/delete-reservation-status/${id}`)
             Toast.fire({
                 icon: "warning",
-                title: "Currency Deleted successfully"
+                title: "Reservation Status Deleted successfully"
             });
         }
     });
@@ -114,7 +114,7 @@ const handleDelete = (id) => {
 
 // Table Headers
 const tableHeaders = [
-    { text: 'Currency', value: 'currency' },
+    { text: 'Reservation Status', value: 'status' },
     { text: 'Actions', value: 'actions' },
 ];
 </script>
@@ -133,10 +133,9 @@ const tableHeaders = [
 
                 <button @click="openModal" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                     </svg>
-
-                    Add Currency
+                    Add Reservation Status
                 </button>
             </div>
 
@@ -146,14 +145,14 @@ const tableHeaders = [
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
                     <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
-                            {{ isEditMode ? 'Edit Currency' : 'Add Currency' }}
+                            {{ isEditMode ? 'Edit Reservation Status' : 'Add Reservation Status' }}
                         </DialogTitle>
 
                         <form @submit.prevent="handleSubmit" class="space-y-3">
                             <div>
-                                <label for="currency" class="block text-sm font-medium">Currency Name</label>
-                                <input v-model="data.currency" type="text" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.currency" class="text-red-500 text-sm">{{ data.errors.currency }}</div>
+                                <label for="status" class="block text-sm font-medium">Reservation Status</label>
+                                <input v-model="data.status" type="text" class="w-full border p-2 rounded" />
+                                <div v-if="data.errors.status" class="text-red-500 text-sm">{{ data.errors.status }}</div>
                             </div>
                             <div class="flex justify-end space-x-2 mt-4">
                                 <button type="button" @click="closeModal" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-sm text-white">Cancel</button>
@@ -168,7 +167,6 @@ const tableHeaders = [
                                     </svg>
                                     {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Submitting...') : (isEditMode ? 'Update' : 'Submit ') }}
                                 </button>
-
                             </div>
                         </form>
                     </div>
@@ -184,9 +182,9 @@ const tableHeaders = [
                 table-class-name="customize-table"
                 show-index
             >
-                <template #item-actions="{ id,currency}">
+                <template #item-actions="{ id,status}">
                     <div class="flex gap-2">
-                        <button @click="handleEdit(id,currency)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
+                        <button @click="handleEdit(id,status)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
                             Edit
                         </button>
                         <button @click="handleDelete(id)" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">

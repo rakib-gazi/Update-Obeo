@@ -55,4 +55,17 @@ Route::middleware([TokenVerificationMiddleware::class])
         Route::post('/dashboard/settings/add-source',[SettingsController::class,'addSource'])->name('addSource');
         Route::put('/dashboard/settings/update-source/{id}',[SettingsController::class,'updateSource'])->name('updateSource');
         Route::get('/dashboard/settings/delete-source/{id}', [SettingsController::class,'deleteSource'])->name('deleteSource');
+
+        //Payment Method   Settings
+        Route::get('dashboard/settings/payment-method-settings',[SettingsController::class, 'getPaymentMethod'])->name('getPaymentMethod');
+        Route::post('/dashboard/settings/add-payment-method',[SettingsController::class,'addPaymentMethod'])->name('addPaymentMethod');
+        Route::put('/dashboard/settings/update-payment-method/{id}',[SettingsController::class,'updatePaymentMethod'])->name('updatePaymentMethod');
+        Route::get('/dashboard/settings/delete-payment-method/{id}', [SettingsController::class,'deletePaymentMethod'])->name('deletePaymentMethod');
+
+
+        //Payment Method   Settings
+        Route::get('dashboard/settings/reservation-status-settings',[SettingsController::class, 'getReservationStatus'])->name('getReservationStatus');
+        Route::post('/dashboard/settings/add-reservation-status',[SettingsController::class,'addReservationStatus'])->name('addReservationStatus');
+        Route::put('/dashboard/settings/update-reservation-status/{id}',[SettingsController::class,'updateReservationStatus'])->name('updateReservationStatus');
+        Route::get('/dashboard/settings/delete-reservation-status/{id}', [SettingsController::class,'deleteReservationStatus'])->name('deleteReservationStatus');
     });

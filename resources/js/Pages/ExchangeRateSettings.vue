@@ -114,7 +114,7 @@ const handleDelete = (id) => {
 
 // Table Headers
 const tableHeaders = [
-    { text: 'Rate', value: 'rate' },
+    { text: 'Exchange Rate', value: 'rate' },
     { text: 'Actions', value: 'actions' },
 ];
 </script>
@@ -133,7 +133,7 @@ const tableHeaders = [
 
                 <button @click="openModal" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
                     </svg>
 
                     Add Exchange Rate
@@ -146,7 +146,7 @@ const tableHeaders = [
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
                     <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
-                            {{ isEditMode ? 'Edit Currency' : 'Add Currency' }}
+                            {{ isEditMode ? 'Edit Exchange Rate' : 'Add Exchange Rate' }}
                         </DialogTitle>
 
                         <form @submit.prevent="handleSubmit" class="space-y-3">

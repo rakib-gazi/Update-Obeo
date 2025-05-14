@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Currency;
 use App\Models\Hotel;
+use App\Models\PaymentMethod;
 use App\Models\Rate;
+use App\Models\ReservationStatus;
 use App\Models\Source;
 use App\Models\User;
 use Exception;
@@ -277,4 +279,127 @@ class SettingsController extends Controller
             return Redirect::back()->withErrors($e->getMessage());
         }
     }
+
+
+    //    Exchange Rate Settings
+    function getPaymentMethod(Request $request)
+    {
+        $payments = PaymentMethod::oldest()->get();
+
+        return Inertia::render('PaymentMethodSettings', [
+            'payments' => $payments
+        ]);
+    }
+    function addPaymentMethod(Request $request)
+    {
+        $data = $request->validate([
+            'payment' => 'required|string|max:50|min:3|unique:payment_methods,payment',
+        ]);
+        DB::beginTransaction();
+        try {
+            PaymentMethod::create($data);
+            DB::commit();
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+    function updatePaymentMethod(Request $request, $id)
+    {
+
+        $data = $request->validate([
+            'payment' => 'required|string|max:50|min:3|unique:payment_methods,payment,' . $id,
+        ]);
+
+        DB::beginTransaction();
+        try {
+            PaymentMethod::where('id', $id)->update($data);
+            DB::commit();
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->withErrors($e->getMessage());
+        }
+
+    }
+    function deletePaymentMethod(Request $request)
+    {
+        $id = $request->id;
+        try{
+            $deleted =  PaymentMethod::where('id', $id)->delete();
+            $error = "";
+            if(!$deleted){
+                $error = "Payment Method not found or could not be deleted";
+            }
+            $data = ['message' => 'Payment Method Deleted Successfully', 'status' => true, 'error' => $error];
+            return redirect()->route('settings/payment-method-settings')->with($data );
+        }
+        catch(Exception $e){
+            return Redirect::back()->withErrors($e->getMessage());
+        }
+    }
+
+
+    //    Exchange Rate Settings
+    function getReservationStatus(Request $request)
+    {
+        $statuses = ReservationStatus::oldest()->get();
+
+        return Inertia::render('ReservationStatusSettings', [
+            'statuses' => $statuses
+        ]);
+    }
+    function addReservationStatus(Request $request)
+    {
+        $data = $request->validate([
+            'status' => 'required|string|max:50|min:3|unique:reservation_statuses,status',
+        ]);
+        DB::beginTransaction();
+        try {
+            ReservationStatus::create($data);
+            DB::commit();
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+    function updateReservationStatus(Request $request, $id)
+    {
+
+        $data = $request->validate([
+            'status' => 'required|string|max:50|min:3|unique:reservation_statuses,status,' . $id,
+        ]);
+
+        DB::beginTransaction();
+        try {
+            ReservationStatus::where('id', $id)->update($data);
+            DB::commit();
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->withErrors($e->getMessage());
+        }
+
+    }
+    function deleteReservationStatus(Request $request)
+    {
+        $id = $request->id;
+        try{
+            $deleted =  ReservationStatus::where('id', $id)->delete();
+            $error = "";
+            if(!$deleted){
+                $error = "Reservation Status not found or could not be deleted";
+            }
+            $data = ['message' => 'Reservation Status Deleted Successfully', 'status' => true, 'error' => $error];
+            return redirect()->route('settings/reservation-status-settings')->with($data );
+        }
+        catch(Exception $e){
+            return Redirect::back()->withErrors($e->getMessage());
+        }
+    }
+
 }
