@@ -9,7 +9,7 @@ class JWTToken
 {
     public static function CreateToken($userEmail):string
     {
-        $key=  env('JWT_KEY');
+        $key=  config('jwt.key');
         $payload = [
             'iss' => env('JWT_ISSUER'),
             'iat' => time(),
@@ -21,7 +21,7 @@ class JWTToken
     public static function VerifyToken($token):string
     {
         try{
-            $key=  env('JWT_KEY');
+            $key=  config('jwt.key');
             $decoded =  JWT::decode($token, new Key($key, 'HS256'));
             return $decoded->userEmail;
         }

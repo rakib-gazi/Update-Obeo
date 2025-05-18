@@ -41,7 +41,7 @@ Route::middleware([TokenVerificationMiddleware::class])
         //Currency Settings
         Route::get('dashboard/settings/currency-settings',[SettingsController::class, 'getCurrencies'])->name('getCurrencies');
         Route::post('/dashboard/settings/add-currency',[SettingsController::class,'addCurrency'])->name('addCurrency');
-        Route::put('/dashboard/settings/update-currency/{id}',[SettingsController::class,'updateCurrency'])->name('updateHotel');
+        Route::put('/dashboard/settings/update-currency/{id}',[SettingsController::class,'updateCurrency'])->name('updateCurrency');
         Route::get('/dashboard/settings/delete-currency/{id}', [SettingsController::class,'deleteCurrency'])->name('deleteCurrency');
 
         //Exchange Rate Settings
