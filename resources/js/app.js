@@ -5,6 +5,8 @@ import 'flowbite'
 import PrimeVue from 'primevue/config'
 import Vue3EasyDataTable from 'vue3-easy-data-table';
 import 'vue3-easy-data-table/dist/style.css';
+import Antd from 'ant-design-vue';
+// import 'ant-design-vue/dist/antd.css'
 
 createInertiaApp({
     resolve: name => {
@@ -16,6 +18,7 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
         app.use(plugin)
         app.use(PrimeVue)
+        app.use(Antd)
         app.component('EasyDataTable', Vue3EasyDataTable)
         app.mount(el)
     }

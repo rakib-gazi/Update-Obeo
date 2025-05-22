@@ -220,7 +220,7 @@ class SettingsController extends Controller
         }
     }
 
-    //    Exchange Rate Settings
+    //    reservation Source Settings
     function getSource(Request $request)
     {
         $sources = Source::oldest()->get();
@@ -281,7 +281,7 @@ class SettingsController extends Controller
     }
 
 
-    //    Exchange Rate Settings
+    //    Payment Method Settings
     function getPaymentMethod(Request $request)
     {
         $payments = PaymentMethod::oldest()->get();
@@ -342,7 +342,7 @@ class SettingsController extends Controller
     }
 
 
-    //    Exchange Rate Settings
+    //    resrvation Status Settings
     function getReservationStatus(Request $request)
     {
         $statuses = ReservationStatus::oldest()->get();

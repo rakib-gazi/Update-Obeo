@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\TokenVerificationMiddleware;
@@ -29,11 +30,17 @@ Route::middleware([TokenVerificationMiddleware::class])
         Route::put('/dashboard/users/{id}',[UserController::class,'updateUser'])->name('updateUser');
         Route::get('/dashboard/delete-user/{id}', [UserController::class,'deleteUser'])->name('deleteUser');
 
+        // reservation
+        Route::get('/dashboard/add-reservation',[ReservationController::class, 'reservation'])->name('reservation');
+//        Route::post('/dashboard/settings/add-hotel',[SettingsController::class,'addHotel'])->name('addHotel');
+//        Route::put('/dashboard/settings/update-hotel/{id}',[SettingsController::class,'updateHotel'])->name('updateHotel');
+//        Route::get('/dashboard/settings/delete-hotel/{id}', [SettingsController::class,'deleteHotel'])->name('deleteHotel');
+
         // settings route
         Route::get('/dashboard/settings',[SettingsController::class, 'settings'])->name('settings');
 
-        // Hotel Settings updateHotel
-        Route::get('dashboard/settings/hotel-settings',[SettingsController::class, 'getHotels'])->name('getHotels');
+        // Hotel Settings
+        Route::get('/dashboard/settings/hotel-settings',[SettingsController::class, 'getHotels'])->name('getHotels');
         Route::post('/dashboard/settings/add-hotel',[SettingsController::class,'addHotel'])->name('addHotel');
         Route::put('/dashboard/settings/update-hotel/{id}',[SettingsController::class,'updateHotel'])->name('updateHotel');
         Route::get('/dashboard/settings/delete-hotel/{id}', [SettingsController::class,'deleteHotel'])->name('deleteHotel');
