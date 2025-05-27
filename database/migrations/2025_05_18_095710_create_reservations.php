@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('obeo_sl')->unique();
-            $table->foreignId('status_id')
+            $table->foreignId('status_id')->nullable()
                 ->constrained('reservation_statuses')
                 ->restrictOnDelete()->cascadeOnUpdate();
             $table->bigInteger('reservation_no' )->unique();
@@ -24,12 +24,12 @@ return new class extends Migration
             $table->foreignId('hotel_id')
                 ->constrained('hotels')
                 ->restrictOnDelete()->cascadeOnUpdate();
-            $table->string('guest_name',100);
+            $table->string('guest_name',150);
             $table->foreignId('rate_id')
                 ->constrained('rates')
                 ->restrictOnDelete()->cascadeOnUpdate();
             $table->decimal('total_advance', 10,2)->default(0);
-            $table->foreignId('currency_id')
+            $table->foreignId('currency_id')->nullable()
                 ->constrained('currencies')
                 ->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('source_id')
@@ -41,8 +41,9 @@ return new class extends Migration
             $table->string('phone',20)->default('Not Provided');
             $table->string('email',100)->default('Not Provided');
             $table->integer('total_adult');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->string('request',255)->nullable();
+            $table->string('comment',255)->nullable();
+            $table->timestamps();
         });
     }
 

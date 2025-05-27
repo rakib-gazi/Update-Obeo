@@ -32,7 +32,7 @@ Route::middleware([TokenVerificationMiddleware::class])
 
         // reservation
         Route::get('/dashboard/add-reservation',[ReservationController::class, 'reservation'])->name('reservation');
-//        Route::post('/dashboard/settings/add-hotel',[SettingsController::class,'addHotel'])->name('addHotel');
+        Route::post('/dashboard/add-reservation',[ReservationController::class,'addreservation'])->name('add-reservation');
 //        Route::put('/dashboard/settings/update-hotel/{id}',[SettingsController::class,'updateHotel'])->name('updateHotel');
 //        Route::get('/dashboard/settings/delete-hotel/{id}', [SettingsController::class,'deleteHotel'])->name('deleteHotel');
 
