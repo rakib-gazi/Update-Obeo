@@ -8,4 +8,5 @@ class PaymentMethod extends Model
 {
     //
     protected  $fillable = ['payment'];
+    protected $hidden = ['created_at', 'updated_at',];
 }

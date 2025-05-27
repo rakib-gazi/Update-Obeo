@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reservation_childrens', function (Blueprint $table) {
+        Schema::create('reservation_children', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('children_id')
-                ->constrained('childrens')
+            $table->foreignId('child_id')
+                ->constrained('children')
                 ->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('reservation_id')
                 ->constrained('reservations')
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservation_childrens');
+        Schema::dropIfExists('reservation_children');
     }
 };

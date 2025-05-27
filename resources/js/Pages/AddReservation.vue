@@ -248,26 +248,36 @@ const handleSubmit = () => {
         reservationData.children = childAges.value
             .filter(age => age !== '')
             .map(age => ({ age }));
-        // reservationData.rooms =  rooms.value
-        //     .filter(room => room.name !== '')
-        //     .map(room => ({
-        //         ...room,
-        //         currency_id: room.currency_id?.id || null
-        //     }));
     reservationData.rooms = rooms.value.map(room => ({
         ...room,
         currency_id: room.currency_id?.id || null
     }));
-
-    console.log(reservationData.data());
     reservationData.post('/dashboard/add-reservation', {
         onSuccess: () => {
             Swal.fire({
                 icon: 'success',
                 title: 'Reservation added successfully',
                 showConfirmButton: false,
-                timer: 1000
+                timer: 2000
             });
+            // Reset reservation form fields
+            reservationData.reset();
+
+            // Reset date fields
+            cInOutDate.value = [null, null];
+            reservationDate.value = null;
+
+            // Reset select fields
+            selected.value = null;
+            selectedRate.value = null;
+            selectedCurrency.value = null;
+            selectedSource.value = null;
+            selectedPayment.value = null;
+
+            // Reset children and rooms
+            childAges.value = [''];
+            rooms.value = [{ name: '', total_room: '', total_night: '', total_price: '', currency_id: null }];
+
         },
     });
 
@@ -1073,5 +1083,3 @@ const getRoomError = (index, field) => {
     color: #6B7280;
 }
 </style>
-
-

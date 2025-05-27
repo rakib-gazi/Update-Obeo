@@ -14,4 +14,5 @@ class Hotel extends Model
         'expediaCollectsCommission',
         'hotelCollectsCommission',
     ];
+    protected $hidden = ['created_at', 'updated_at',];
 }

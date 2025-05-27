@@ -11,4 +11,5 @@ class Rate extends Model
         'rate',
 
     ];
+    protected $hidden = ['created_at', 'updated_at',];
 }

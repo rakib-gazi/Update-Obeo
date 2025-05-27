@@ -11,4 +11,5 @@ class Currency extends Model
         'currency',
 
     ];
+    protected $hidden = ['created_at', 'updated_at',];
 }

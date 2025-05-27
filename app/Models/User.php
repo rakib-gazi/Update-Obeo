@@ -24,10 +24,10 @@ class User extends Authenticatable
     ];
 
     protected $hidden = [
-       
         'remember_token',
+        'created_at',
+        'updated_at',
     ];
-
     protected function casts(): array
     {
         return [

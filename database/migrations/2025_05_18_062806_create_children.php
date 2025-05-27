@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('childrens', function (Blueprint $table) {
+        Schema::create('children', function (Blueprint $table) {
             $table->id();
             $table->integer('age');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamps();
         });
     }
 
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('childrens');
+        Schema::dropIfExists('children');
     }
 };

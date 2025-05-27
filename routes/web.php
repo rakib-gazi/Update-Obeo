@@ -30,8 +30,11 @@ Route::middleware([TokenVerificationMiddleware::class])
         Route::put('/dashboard/users/{id}',[UserController::class,'updateUser'])->name('updateUser');
         Route::get('/dashboard/delete-user/{id}', [UserController::class,'deleteUser'])->name('deleteUser');
 
+        // settings route
+        Route::get('/dashboard/reservations',[ReservationController::class, 'reservations'])->name('reservations');
         // reservation
         Route::get('/dashboard/add-reservation',[ReservationController::class, 'reservation'])->name('reservation');
+        Route::get('/dashboard/reservations/all-reservations',[ReservationController::class, 'getAllReservations'])->name('getAllReservations');
         Route::post('/dashboard/add-reservation',[ReservationController::class,'addreservation'])->name('add-reservation');
 //        Route::put('/dashboard/settings/update-hotel/{id}',[SettingsController::class,'updateHotel'])->name('updateHotel');
 //        Route::get('/dashboard/settings/delete-hotel/{id}', [SettingsController::class,'deleteHotel'])->name('deleteHotel');
