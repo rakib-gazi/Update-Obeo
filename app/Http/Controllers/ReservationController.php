@@ -168,6 +168,7 @@ class ReservationController extends Controller
     function getAllReservations()
     {
         $reservations = Reservation::with([
+            'reservation_status:id,status',
             'hotel:id,hotelName',
             'rate:id,rate',
             'currency:id,currency',

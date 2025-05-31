@@ -6,6 +6,7 @@ import { ref } from "vue";
 import { Dialog, DialogOverlay, DialogTitle } from "@headlessui/vue";
 // State
 const userData = ref(usePage().props.reservations);
+
 const isModalOpen = ref(false);
 const isEditMode = ref(false);
 const isSubmitting = ref(false);
@@ -72,10 +73,9 @@ const handleSubmit = () => {
 };
 
 // Prepare Edit
-const handleEdit = (id,payment) => {
-    editingUserId = id;
-    isEditMode.value = true;
-    data.payment = payment;
+const handleEdit = (item) => {
+    editingUserId = item.id;
+    // data.payment = payment;
     openModal();
 
 };
@@ -114,14 +114,32 @@ const handleDelete = (id) => {
 
 // Table Headers
 const tableHeaders = [
-    { text: 'Reservation No', value: 'reservation_no' },
+    { text: 'Booking No', value: 'reservation_no' },
     { text: 'C/IN', value: 'check_in' },
     { text: 'C/OUT', value: 'check_out' },
     { text: 'Name', value: 'guest_name' },
     { text: 'Hotel', value: 'hotel.hotelName' },
     { text: 'Room', value: 'rooms' },
+    { text: 'Total Price',  value: 'total_price_bdt' },
+    { text: 'Status',  value: 'status_id' },
     { text: 'Actions', value: 'actions' },
 ];
+function getTotalPriceInBDT(rooms, rate) {
+    let total = 0;
+    rooms.forEach(room => {
+        const price = parseFloat(room.total_price) || 0;
+        const currency = room.currency?.currency;
+
+        if (currency === 'USD') {
+            total += price * parseFloat(rate || 0);
+        } else {
+            total += price;
+        }
+    });
+    return total.toFixed(2);
+}
+
+
 </script>
 
 <template>
@@ -150,9 +168,8 @@ const tableHeaders = [
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
                     <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
-                            {{ isEditMode ? 'Edit Payment Method' : 'Add Payment Method' }}
+                            Edit Reservation
                         </DialogTitle>
-
                         <form @submit.prevent="handleSubmit" class="space-y-3">
                             <div>
                                 <label for="payment" class="block text-sm font-medium">Payment Method</label>
@@ -170,7 +187,7 @@ const tableHeaders = [
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                                     </svg>
-                                    {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Submitting...') : (isEditMode ? 'Update' : 'Submit ') }}
+                                    {{ isSubmitting ?  'Updating...' : 'Update'}}
                                 </button>
                             </div>
                         </form>
@@ -190,19 +207,79 @@ const tableHeaders = [
                 <template #item-rooms="{ rooms }">
                     <div class="space-y-1">
                         <div v-for="(room, index) in rooms" :key="index" class="text-sm text-gray-700">
-                            <strong>{{ room.name }}</strong> —
-                            {{ room.total_room }}x Rooms,
-                            {{ room.total_night }} Night(s),
-                            {{ room.total_price }} {{ room.currency?.currency ?? '' }}
+                            <strong>{{ room.name }}</strong>
+                            <p class="flex justify-start items-center gap-1">R*{{ room.total_room }}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                                </svg>
+                                N*{{ room.total_night }}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                                </svg>
+                                {{ room.total_price }} {{ room.currency?.currency ?? '' }}
+                            </p>
                         </div>
                     </div>
                 </template>
-                <template #item-actions="{ id,payment}">
+                <template #item-total_price_bdt="item">
+                    <div class="text-sm font-semibold text-green-700">
+                        {{ getTotalPriceInBDT(item.rooms,item.rate.rate) }} BDT
+                    </div>
+                </template>
+                <template #item-status_id="item">
+                    <div class="text-sm font-semibold" :class="item.status_id ? 'text-green-700' : 'text-gray-500'">
+                        {{ item.status_id || 'N/A' }}
+                    </div>
+                </template>
+                <template #expand="item">
+                    <div class="p-4 grid grid-cols-4 gap -2">
+                        <div>
+                            <p><strong>Oboe Sl:</strong> {{ item.obeo_sl }}</p>
+                            <p><strong>Booking No:</strong> {{ item.reservation_no }}</p>
+                            <p><strong>Check-in:</strong> {{ item.check_in }}</p>
+                            <p><strong>Check-out:</strong> {{ item.check_out }}</p>
+                            <p><strong>Reservation Date:</strong> {{ item.reservation_date }}</p>
+
+                        </div>
+                        <div>
+                            <p><strong>Guest Name:</strong> {{ item.guest_name }}</p>
+                            <p><strong>Hotel Name:</strong> {{ item.hotel?.hotelName }}</p>
+                            <p><strong>Email:</strong> {{ item.email }}</p>
+                            <p><strong>Phone:</strong> {{ item.phone }}</p>
+                            <p><strong>Request:</strong> {{ item.request }}</p>
+                            <p><strong>Comment:</strong> {{ item.comment }}</p>
+
+                        </div>
+                        <div>
+                            <strong>Rooms ({{item.rooms.length}}):</strong>
+                            <ul class="list-disc ml-5">
+                                <li v-for="room in item.rooms" :key="room.id">
+                                    <p class="font-semibold-semibold">{{ room.name }}</p>
+                                    <p>
+                                        {{ room.total_room }} room(s), {{ room.total_night }} night(s), {{ room.total_price }} {{ room.currency?.currency }}
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p><strong>Total Adult:</strong> {{ item.total_adult }}</p>
+                            <div v-if="item.children?.length">
+                               <p> <strong>Children ({{item.children.length}}):</strong > (<span v-for="child in item.children" :key="child.id"> {{ child.age }}, </span>)</p>
+                            </div>
+                            <p><strong>Total Advance:</strong> {{ item.total_advance }}</p>
+                            <p><strong>Exchange Rate:</strong> {{ item.rate?.rate }} {{ item.currency?.currency }}</p>
+                            <p><strong>Payment Method:</strong>  {{ item.payment_method.payment }}</p>
+                            <p><strong>Source:</strong> {{ item.source.source }}</p>
+                        </div>
+
+                    </div>
+                </template>
+                <template #item-actions="item">
                     <div class="flex gap-2">
-                        <button @click="handleEdit(id,payment)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
+                        <button @click="handleEdit(item)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
                             Edit
                         </button>
-                        <button @click="handleDelete(id)" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">
+                        <button @click="handleDelete(item.id)" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">
                             Delete
                         </button>
                     </div>

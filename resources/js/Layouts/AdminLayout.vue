@@ -51,7 +51,7 @@ const data = [
         <!-- Sidebar -->
         <aside  :class="[
         'bg-slate-800 border-r  fixed top-0 left-0 h-full z-50 transition-all duration-300',
-        isCollapsed ? 'w-[70px]' : 'w-[250px]'
+        isCollapsed ? 'w-[70px]' : 'w-[200px]'
     ]">
 
             <div class="shadow bg-cyan-950" :class="isCollapsed ? 'py-7 px-4': 'p-4'">
@@ -88,7 +88,7 @@ const data = [
         </aside>
 
         <!-- Content -->
-        <div :class="['flex-1 bg-gray-100 min-h-screen transition-all duration-300', isCollapsed ? 'ml-[70px]' : 'ml-[250px]']">
+        <div :class="['flex-1 bg-gray-100 min-h-screen transition-all duration-300', isCollapsed ? 'ml-[70px]' : 'ml-[200px]']">
             <!-- Header -->
             <header class="bg-cyan-950 p-6 shadow flex items-center justify-between">
                 <div class="space-x-4 flex items-center">

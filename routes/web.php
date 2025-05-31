@@ -66,7 +66,7 @@ Route::middleware([TokenVerificationMiddleware::class])
         Route::put('/dashboard/settings/update-source/{id}',[SettingsController::class,'updateSource'])->name('updateSource');
         Route::get('/dashboard/settings/delete-source/{id}', [SettingsController::class,'deleteSource'])->name('deleteSource');
 
-        //Payment Method   Settings
+        //Payment Method  Settings
         Route::get('dashboard/settings/payment-method-settings',[SettingsController::class, 'getPaymentMethod'])->name('getPaymentMethod');
         Route::post('/dashboard/settings/add-payment-method',[SettingsController::class,'addPaymentMethod'])->name('addPaymentMethod');
         Route::put('/dashboard/settings/update-payment-method/{id}',[SettingsController::class,'updatePaymentMethod'])->name('updatePaymentMethod');

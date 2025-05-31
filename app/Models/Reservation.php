@@ -54,6 +54,10 @@ class Reservation extends Model
     public function rooms() {
         return $this->belongsToMany(Room::class, 'reservation_rooms');
     }
+    public function reservation_status()
+    {
+        return $this->belongsTo(ReservationStatus::class, 'status_id');
+    }
     protected $hidden = ['created_at', 'updated_at',];
 
 }
