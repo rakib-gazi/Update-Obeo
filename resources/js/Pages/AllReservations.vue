@@ -1,16 +1,73 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { router, useForm, usePage,Link } from "@inertiajs/vue3";
+import {computed, ref, watchEffect, reactive, onMounted } from 'vue';
 import Swal from "sweetalert2";
-import { ref } from "vue";
-import { Dialog, DialogOverlay, DialogTitle } from "@headlessui/vue";
-// State
-const userData = ref(usePage().props.reservations);
+import {
+    Combobox,
+    ComboboxButton,
+    ComboboxInput, ComboboxOption,
+    ComboboxOptions,
+    Dialog,
+    DialogOverlay,
+    DialogTitle,
+    TransitionRoot
+} from "@headlessui/vue";
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import {CheckIcon, ChevronUpDownIcon} from "@heroicons/vue/20/solid/index.js";
+dayjs.extend(customParseFormat);
 
+const userData = ref(usePage().props.reservations);
+const formHotels = ref(usePage().props.hotels);
+const formRates = ref(usePage().props.rates);
 const isModalOpen = ref(false);
-const isEditMode = ref(false);
 const isSubmitting = ref(false);
 let editingUserId = null;
+const cInOutDate = ref([null, null]);
+const reservationDate = ref(null);
+// all select field focued data
+const isCInoutFocused = ref(false);
+const isReservationFocused = ref(false);
+const isHotelFocused = ref(false);
+const query = ref('');
+const isRateFocused = ref(false);
+
+// all selected field selected data
+const selected = ref(null);
+const selectedRate = ref(null);
+
+// all selected field value data
+const hasValue = computed(() => cInOutDate.value && cInOutDate.value[0] && cInOutDate.value[1]);
+const hasValue2 = computed(() => reservationDate.value !== null);
+const hasValue3 = computed(() => selected.value !== null);
+const hasValue4 = computed(() => selectedRate.value !== null);
+
+const filteredhotel = computed(() =>
+    query.value === ''
+        ? formHotels.value
+        : formHotels.value.filter((hotel) =>
+            hotel.hotelName
+                .toLowerCase()
+                .replace(/\s+/g, '')
+                .includes(query.value.toLowerCase().replace(/\s+/g, ''))
+        )
+);
+const filteredRates = computed(() =>
+    query.value === ''
+        ? formRates.value
+        : formRates.value.filter((rate) =>
+            (rate.currency + rate.rate)
+                .toLowerCase()
+                .replace(/\s+/g, '')
+                .includes(query.value.toLowerCase().replace(/\s+/g, ''))
+        )
+);
+function handleEnter() {
+    if (!selected.value || selected.value.name === 'Select Hotel') {
+        selected.value = null;
+    }
+}
 // Modal Control
 const openModal = () => {
     isModalOpen.value = true;
@@ -20,18 +77,22 @@ const closeModal = () => {
         document.activeElement.blur();
     }
     isModalOpen.value = false;
-    isEditMode.value = false;
     editingUserId = null;
-    data.reset();
 };
 // Form
-const data = useForm({
-    payment: '',
+const reservationData = useForm({
+    reservation_no: '',
+    check_in: null,
+    check_out: null,
+    reservation_date: null,
+    guest_name: '',
+    hotel_id: '',
+    rate_id: '',
 });
 // Refresh User List
 const fetchUsers = () => {
     router.reload({
-        only: ['payments'],
+        only: ['reservations'],
         onSuccess: () => {
             userData.value = usePage().props.reservations ;
         }
@@ -41,41 +102,43 @@ const fetchUsers = () => {
 // Add or Update User
 const handleSubmit = () => {
     isSubmitting.value = true;
-    if (isEditMode.value) {
-        data.put(`/dashboard/settings/update-payment-method/${editingUserId}`, {
-            onSuccess: () => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Payment Method updated successfully',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-                closeModal();
-                fetchUsers();
-            },
-            onFinish: () => isSubmitting.value = false
-        });
-    } else {
-        data.post('/dashboard/settings/add-payment-method', {
-            onSuccess: () => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Payment Method added successfully',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-                closeModal();
-                fetchUsers();
-            },
-            onFinish: () => isSubmitting.value = false
-        });
-    }
+    reservationData.check_in = reservationData.check_in ? dayjs(reservationData.check_in).format('YYYY-MM-DD') : null;
+    reservationData.check_out = reservationData.check_out ? dayjs(reservationData.check_out).format('YYYY-MM-DD') : null;
+    reservationData.reservation_date = reservationData.reservation_date ? dayjs(reservationData.reservation_date).format('YYYY-MM-DD') : null;
+    console.log(reservationData);
+    // reservationData.put(`/dashboard/settings/update-payment-method/${editingUserId}`, {
+    //     onSuccess: () => {
+    //         Swal.fire({
+    //             icon: 'success',
+    //             title: 'Payment Method updated successfully',
+    //             showConfirmButton: false,
+    //             timer: 1000
+    //         });
+    //         closeModal();
+    //         fetchUsers();
+    //     },
+    //     onFinish: () => isSubmitting.value = false
+    // });
 };
 
 // Prepare Edit
 const handleEdit = (item) => {
     editingUserId = item.id;
-    // data.payment = payment;
+    // Fill the form fields
+    reservationData.reservation_no = item.reservation_no || '';
+    reservationData.check_in = item.check_in || null;
+    reservationData.check_out = item.check_out || null;
+    reservationData.reservation_date = item.reservation_date || null;
+    reservationData.guest_name = item.guest_name || '';
+    reservationData.hotel_id = item.hotel_id || '';
+
+    // // Set related state for UI components
+    cInOutDate.value = [
+        item.check_in ? dayjs(item.check_in, 'YYYY-MM-DD') : null,
+        item.check_out ? dayjs(item.check_out, 'YYYY-MM-DD') : null,
+    ];
+    reservationDate.value = item.reservation_date ? dayjs(item.reservation_date, 'YYYY-MM-DD') : null;
+    const selectedHotelsCheck = selected.value = formHotels.value.find(hotel => hotel.id === item.hotel.id) || null;
     openModal();
 
 };
@@ -138,7 +201,16 @@ function getTotalPriceInBDT(rooms, rate) {
     });
     return total.toFixed(2);
 }
-
+watchEffect(() => {
+    reservationData.check_in = cInOutDate.value?.[0] || null;
+    reservationData.check_out = cInOutDate.value?.[1] || null;
+    reservationData.reservation_date = reservationDate.value || null;
+    reservationData.hotel_id = selected.value?.id || '';
+    reservationData.rate_id = selectedRate.value?.id || '';
+    // reservationData.currency_id = selectedCurrency.value?.id || null;
+    // reservationData.source_id = selectedSource.value?.id || '';
+    // reservationData.payment_method_id = selectedPayment.value?.id || '';
+});
 
 </script>
 
@@ -163,18 +235,251 @@ function getTotalPriceInBDT(rooms, rate) {
             </div>
 
             <!-- Modal -->
-            <Dialog :open="isModalOpen" @close="closeModal" class="fixed z-50 inset-0 overflow-y-auto" aria-hidden="false">
+            <TransitionRoot as="template" :show="isModalOpen">
+                <Dialog  @close="closeModal" class="fixed z-50 inset-0 overflow-y-auto" aria-hidden="false">
                 <div class="flex items-center justify-center min-h-screen p-4 text-center">
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
-                    <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
+                    <div class="relative bg-white w-full p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
                             Edit Reservation
                         </DialogTitle>
-                        <form @submit.prevent="handleSubmit" class="space-y-3">
-                            <div>
-                                <label for="payment" class="block text-sm font-medium">Payment Method</label>
-                                <input v-model="data.payment" type="text" class="w-full border p-2 rounded" />
-                                <div v-if="data.errors.payment" class="text-red-500 text-sm">{{ data.errors.payment }}</div>
+                        <form @submit.prevent="handleSubmit" class="space-y-3" autocomplete="off">
+                            <div class="grid grid-cols-3 gap-4">
+                                <!--reservation no-->
+                                <div>
+                                    <div class="relative">
+                                        <input type="text" id="floating_outlined" v-model="reservationData.reservation_no"
+                                               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-500 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                               placeholder=" "/>
+                                        <label for="floating_outlined"
+                                               class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2  peer-focus:top-2 peer-focus:scale-75  peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+                                            Reservation No
+                                        </label>
+                                    </div>
+                                    <div v-if="reservationData.errors.reservation_no" class="text-red-500 text-sm pt-2">{{ reservationData.errors.reservation_no }}</div>
+                                </div>
+                                <!--check in & check out-->
+                                <div>
+                                    <div class="relative">
+                                        <label
+                                            v-if="isCInoutFocused || hasValue"
+                                            class="absolute text-sm text-blue-600 scale-75 -translate-y-4 top-2 bg-white px-2 left-2 z-10 transition-all "
+                                        >
+                                            Select Check-in - check-out
+                                        </label>
+                                        <a-range-picker
+                                            v-model:value="cInOutDate"
+                                            format="DD/MM/YYYY"
+                                            :placeholder="['Check-in', 'Check-out']"
+                                            class="w-full px-2.5 pt-4 pb-2.5 border border-gray-500 rounded-lg focus:border-blue-600 h-[45px] text-gray-900"
+                                            @focus="isCInoutFocused = true" @blur="isCInoutFocused = false"/>
+                                    </div>
+                                    <div v-if="reservationData.errors.check_in" class="text-red-500 text-sm pt-2">{{ reservationData.errors.check_in }}</div>
+                                    <div v-else-if="reservationData.errors.check_out" class="text-red-500 text-sm pt-2">{{ reservationData.errors.check_out }}</div>
+                                </div>
+                                <!--reservation date-->
+                                <div>
+                                    <div class="relative">
+                                        <label
+                                            v-if="isReservationFocused || hasValue2"
+                                            class="absolute text-sm text-blue-600 scale-75 -translate-y-4 top-2 bg-white px-2 left-2 z-10 transition-all"
+                                        >
+                                            Select Reservation Date
+                                        </label>
+                                        <a-date-picker
+                                            v-model:value="reservationDate"
+                                            format="DD/MM/YYYY"
+                                            placeholder="Reservation Date"
+                                            class="w-full px-2.5 pt-4 pb-2.5 border border-gray-500 rounded-lg focus:border-blue-600 h-[45px] text-gray-900"
+                                            @focus="isReservationFocused = true" @blur="isReservationFocused = false"/>
+                                    </div>
+                                    <div v-if="reservationData.errors.reservation_date" class="text-red-500 text-sm pt-2">{{ reservationData.errors.reservation_date }}</div>
+                                </div>
+                                <!--Guest Name-->
+                                <div>
+                                    <div class="relative">
+                                        <input type="text" id="guestName" v-model="reservationData.guest_name"
+                                               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-500 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                               placeholder=" "/>
+                                        <label for="guestName"
+                                               class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2  peer-focus:top-2 peer-focus:scale-75  peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+                                            Guest Name</label>
+                                    </div>
+                                    <div v-if="reservationData.errors.guest_name" class="text-red-500 text-sm pt-2">{{ reservationData.errors.guest_name }}</div>
+                                </div>
+                                <!--hotel_id-->
+                                <div>
+                                    <div>
+                                        <Combobox v-model="selected">
+                                            <div class="relative">
+                                                <!-- Floating Label -->
+                                                <label
+                                                    :class="[
+                                            'absolute text-sm px-2 left-2 z-10 transition-all bg-white cursor-text',
+                                            (isHotelFocused || hasValue3)
+                                              ? 'text-blue-600 scale-75 -translate-y-4 top-2'
+                                              : 'text-gray-500 top-1/2 -translate-y-1/2 scale-100'
+                                          ]"
+                                                    for="floating_combobox"
+                                                >
+                                                    Select Hotel
+                                                </label>
+
+                                                <div
+                                                    class="relative w-full overflow-hidden rounded-lg border border-gray-400 bg-white text-left shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                                                >
+                                                    <ComboboxInput
+                                                        id="floating_combobox"
+                                                        class="peer w-full border-none px-3 pt-4 pb-2 text-sm leading-5 text-gray-900 focus:ring-0"
+                                                        :displayValue="(hotel) => hotel?.hotelName || ''"
+                                                        @change="query = $event.target.value"
+                                                        @focus="isHotelFocused = true"
+                                                        @blur="isHotelFocused = false"
+                                                        placeholder=" "
+                                                        @keydown.enter.prevent="handleEnter"
+                                                    />
+
+
+                                                    <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
+                                                        <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                                                    </ComboboxButton>
+                                                </div>
+
+                                                <!-- Dropdown Options -->
+                                                <TransitionRoot
+                                                    leave="transition ease-in duration-100"
+                                                    leaveFrom="opacity-100"
+                                                    leaveTo="opacity-0"
+                                                    @after-leave="query = ''"
+
+                                                >
+                                                    <ComboboxOptions
+                                                        class="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                                                    >
+                                                        <div
+                                                            v-if="filteredhotel.length === 0 && query !== ''"
+                                                            class="relative cursor-default select-none px-4 py-2 text-gray-700"
+                                                        >
+                                                            Nothing found.
+                                                        </div>
+
+                                                        <ComboboxOption
+                                                            v-for="hotel in filteredhotel"
+                                                            :key="hotel.id"
+                                                            :value="hotel"
+                                                            v-slot="{ selected, active }"
+                                                        >
+                                                            <li
+                                                                class="relative cursor-default select-none py-2 pl-10 pr-4"
+                                                                :class="{'bg-blue-600 text-white': active, 'text-gray-900': !active,}">
+                                                        <span
+                                                            class="block truncate"
+                                                            :class="{ 'font-medium': selected, 'font-normal': !selected }"
+                                                        >
+                                                          {{ hotel.hotelName }}
+                                                        </span>
+                                                                <span
+                                                                    v-if="selected"
+                                                                    class="absolute inset-y-0 left-0 flex items-center pl-3"
+                                                                    :class="{ 'text-white': active, 'text-blue-600': !active }"
+                                                                >
+                                                      <CheckIcon class="h-5 w-5" aria-hidden="true"/>
+                                                    </span>
+                                                            </li>
+                                                        </ComboboxOption>
+                                                    </ComboboxOptions>
+                                                </TransitionRoot>
+                                            </div>
+                                        </Combobox>
+                                    </div>
+                                    <div v-if="reservationData.errors.hotel_id" class="text-red-500 text-sm pt-2">{{ reservationData.errors.hotel_id }}</div>
+                                </div>
+                                <!--exchange rate-->
+                                <div>
+                                    <div>
+                                        <Combobox v-model="selectedRate">
+                                            <div class="relative">
+                                                <!-- Floating Label -->
+                                                <label
+                                                    :class="[
+                                            'absolute text-sm px-2 left-2 z-10 transition-all bg-white cursor-text',
+                                            (isRateFocused || hasValue4)
+                                              ? 'text-blue-600 scale-75 -translate-y-4 top-2'
+                                              : 'text-gray-500 top-1/2 -translate-y-1/2 scale-100'
+                                          ]"
+                                                    for="floating_combobox_rate"
+                                                >
+                                                    Select Exchange Rate
+                                                </label>
+
+                                                <div
+                                                    class="relative w-full overflow-hidden rounded-lg border border-gray-400 bg-white text-left shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                                                >
+                                                    <ComboboxInput
+                                                        id="floating_combobox_rate"
+                                                        class="peer w-full border-none px-3 pt-4 pb-2 text-sm leading-5 text-gray-900 focus:ring-0"
+                                                        :displayValue="(rate) => rate?.rate || ''"
+                                                        @change="query = $event.target.value"
+                                                        @focus="isRateFocused = true"
+                                                        @blur="isRateFocused = false"
+                                                        placeholder=" "
+                                                        @keydown.enter.prevent="handleEnter"
+                                                    />
+
+
+                                                    <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
+                                                        <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                                                    </ComboboxButton>
+                                                </div>
+
+                                                <!-- Dropdown Options -->
+                                                <TransitionRoot
+                                                    leave="transition ease-in duration-100"
+                                                    leaveFrom="opacity-100"
+                                                    leaveTo="opacity-0"
+                                                    @after-leave="query = ''"
+                                                >
+                                                    <ComboboxOptions
+                                                        class="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                                                    >
+                                                        <div
+                                                            v-if="filteredRates.length === 0 && query !== ''"
+                                                            class="relative cursor-default select-none px-4 py-2 text-gray-700"
+                                                        >
+                                                            Nothing found.
+                                                        </div>
+
+                                                        <ComboboxOption
+                                                            v-for="rate in filteredRates"
+                                                            :key="rate.id"
+                                                            :value="rate"
+                                                            v-slot="{ selected, active }"
+                                                        >
+                                                            <li
+                                                                class="relative cursor-default select-none py-2 pl-10 pr-4"
+                                                                :class="{'bg-blue-600 text-white': active, 'text-gray-900': !active,}">
+                                                        <span
+                                                            class="block truncate"
+                                                            :class="{ 'font-medium': selected, 'font-normal': !selected }"
+                                                        >
+                                                          {{ rate.rate }}
+                                                        </span>
+                                                                <span
+                                                                    v-if="selected"
+                                                                    class="absolute inset-y-0 left-0 flex items-center pl-3"
+                                                                    :class="{ 'text-white': active, 'text-blue-600': !active }"
+                                                                >
+                                                      <CheckIcon class="h-5 w-5" aria-hidden="true"/>
+                                                    </span>
+                                                            </li>
+                                                        </ComboboxOption>
+                                                    </ComboboxOptions>
+                                                </TransitionRoot>
+                                            </div>
+                                        </Combobox>
+                                    </div>
+                                    <div v-if="reservationData.errors.rate_id" class="text-red-500 text-sm pt-2">{{ reservationData.errors.rate_id }}</div>
+                                </div>
                             </div>
                             <div class="flex justify-end space-x-2 mt-4">
                                 <button type="button" @click="closeModal" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-sm text-white">Cancel</button>
@@ -194,6 +499,7 @@ function getTotalPriceInBDT(rooms, rate) {
                     </div>
                 </div>
             </Dialog>
+            </TransitionRoot>
 
             <!-- Table -->
             <EasyDataTable

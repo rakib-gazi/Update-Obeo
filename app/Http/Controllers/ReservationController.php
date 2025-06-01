@@ -167,6 +167,7 @@ class ReservationController extends Controller
     // all reservations
     function getAllReservations()
     {
+        $hotels =  Hotel::select('id', 'hotelName')->get();
         $reservations = Reservation::with([
             'reservation_status:id,status',
             'hotel:id,hotelName',
@@ -202,7 +203,8 @@ class ReservationController extends Controller
             });
 
         return Inertia::render('AllReservations', [
-            'reservations' => $reservations
+            'reservations' => $reservations,
+            'hotels' => $hotels,
         ]);
 //        return response()->json($reservations);
     }
