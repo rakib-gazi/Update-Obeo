@@ -245,7 +245,7 @@ const handleSubmit = () => {
     reservationData.check_in = reservationData.check_in ? dayjs(reservationData.check_in).format('YYYY-MM-DD') : null;
     reservationData.check_out = reservationData.check_out ? dayjs(reservationData.check_out).format('YYYY-MM-DD') : null;
     reservationData.reservation_date = reservationData.reservation_date ? dayjs(reservationData.reservation_date).format('YYYY-MM-DD') : null;
-        reservationData.children = childAges.value
+    reservationData.children = childAges.value
             .filter(age => age !== '')
             .map(age => ({ age }));
     reservationData.rooms = rooms.value.map(room => ({
@@ -1044,6 +1044,7 @@ const getRoomError = (index, field) => {
                                 </div>
                             </div>
                         </div>
+                        <!-- request & comments-->
                         <div class="col-span-3 grid grid-cols-2 gap-2">
                             <!--Guest Request no-->
                             <div class="relative">
