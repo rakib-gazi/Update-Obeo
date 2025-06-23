@@ -93,6 +93,7 @@ class ReservationController extends Controller
             'children.*.age' => 'required|integer|min:0|max:17',
 
             'rooms' => 'required|array|min:1',
+
             'rooms.*.name' => 'required|string|max:255',
             'rooms.*.total_night' => 'required|integer|min:1|max:99',
             'rooms.*.total_room' => 'required|integer|min:1||max:99',
@@ -218,13 +219,18 @@ class ReservationController extends Controller
 
     function updateReservation(Request $request, $id)
     {
+//        Log::info('Frontend Data: ' . json_encode([
+//                'id' => $id,
+//                'data' => $request->all()
+//            ], JSON_PRETTY_PRINT));
         $messages = [
             'reservation_no.regex' => 'Reservation number must be a number.',
             'hotel_id.required' =>'The hotel is required',
             'rate_id.required' =>'The Exchange Rate is required',
             'source_id.required' =>'The Reservation Source is required',
             'payment_method_id.required' =>'The Payment Method is required',
-            'currency_id.required_with' => 'Advance currency is required',
+            'total_advance.required_with' => 'Total advance is required.',
+            'currency_id.required_with' => 'Currency is required.',
             'phone.required_without' => 'Phone or email is required.',
             'email.required_without' => 'Phone or email is required.',
             'total_adult.integer' => 'Total adults must be a number.',
@@ -236,7 +242,7 @@ class ReservationController extends Controller
             'rooms.*.total_room.required' => 'Rooms required.',
             'rooms.*.total_room.integer' => 'Must be number',
             'rooms.*.total_room.min' => 'Minimum 1 Room.',
-            'rooms.*.total_room.max' => 'Maximum 50 Room.',
+            'rooms.*.tota l_room.max' => 'Maximum 50 Room.',
             'rooms.*.total_price.required' => 'Price required.',
             'rooms.*.total_price.numeric' => 'Must be number',
             'rooms.*.total_price.max' => 'Maximum 0 .',
@@ -252,7 +258,7 @@ class ReservationController extends Controller
             'hotel_id' => 'required|exists:hotels,id',
             'guest_name' => 'required|string|max:255',
             'rate_id' => 'required|exists:rates,id',
-            'total_advance' => 'nullable|numeric|min:0',
+            'total_advance' => 'nullable|required_with:currency_id|numeric|min:0',
             'currency_id' => 'nullable|required_with:total_advance|exists:currencies,id',
             'source_id' => 'required|exists:sources,id',
             'payment_method_id' => 'required|exists:payment_methods,id',
@@ -266,6 +272,7 @@ class ReservationController extends Controller
             'children.*.age' => 'required|integer|min:0|max:17',
 
             'rooms' => 'required|array|min:1',
+            'rooms.*.id' => 'nullable|integer|exists:rooms,id',
             'rooms.*.name' => 'required|string|max:255',
             'rooms.*.total_night' => 'required|integer|min:1|max:99',
             'rooms.*.total_room' => 'required|integer|min:1||max:99',
@@ -278,7 +285,7 @@ class ReservationController extends Controller
             $reservation = Reservation::findOrFail($id);
 
             $reservation->update([
-                'status_id' => $data['status_id'] ?? null,
+                'status _id' => $data['status_id'] ?? null,
                 'reservation_no' => $data['reservation_no'],
                 'check_in' => $data['check_in'],
                 'check_out' => $data['check_out'],
@@ -296,47 +303,52 @@ class ReservationController extends Controller
                 'request' => $data['request'],
                 'comment' => $data['comment'],
             ]);
-
-            // Delete old reservation room links & rooms
-            foreach ($reservation->reservationRooms as $rr) {
-                $rr->room->delete();
-                $rr->delete();
-            }
-
-            // Save new rooms
+            $currentRoomIds = $reservation->rooms()->pluck('rooms.id')->toArray();
+            $updatedRoomIds = [];
             foreach ($data['rooms'] as $roomData) {
-                $room = Room::create([
-                    'name' => $roomData['name'],
-                    'total_room' => $roomData['total_room'],
-                    'total_night' => $roomData['total_night'],
-                    'total_price' => $roomData['total_price'],
-                    'currency_id' => $roomData['currency_id'],
-                ]);
-
-                ReservationRoom::create([
-                    'room_id' => $room->id,
-                    'reservation_id' => $reservation->id,
-                ]);
-            }
-
-            // Delete old children and links
-            foreach ($reservation->reservationChildren as $rc) {
-                $rc->child->delete();
-                $rc->delete();
-            }
-
-            // Save new children
-            if (!empty($data['children'])) {
-                foreach ($data['children'] as $childData) {
-                    $child = Child::create(['age' => $childData['age']]);
-
-                    ReservationChild::create([
-                        'child_id' => $child->id,
-                        'reservation_id' => $reservation->id,
+                if (!empty($roomData['id'])) {
+                    // Update existing room
+                    $room = Room::find($roomData['id']);
+                    $room->update([
+                        'name' => $roomData['name'],
+                        'total_room' => $roomData['total_room'],
+                        'total_night' => $roomData['total_night'],
+                        'total_price' => $roomData['total_price'],
+                        'currency_id' => $roomData['currency_id'],
+                    ]);
+                } else {
+                    // Create new room
+                    $room = Room::create([
+                        'name' => $roomData['name'],
+                        'total_room' => $roomData['total_room'],
+                        'total_night' => $roomData['total_night'],
+                        'total_price' => $roomData['total_price'],
+                        'currency_id' => $roomData['currency_id'],
                     ]);
                 }
-            }
 
+                $updatedRoomIds[] = $room->id;
+                Log::info('Founded Room ID: ' . json_encode([
+                        'data' => $updatedRoomIds
+                    ]));
+                ReservationRoom::updateOrCreate(
+                    [
+                        'reservation_id' => $reservation->id,
+                        'room_id' => $room->id,
+                    ]
+                );
+            }
+            $roomIdsToDelete = array_diff($currentRoomIds, $updatedRoomIds);
+
+            if (!empty($roomIdsToDelete)) {
+                // First remove from pivot table
+                ReservationRoom::where('reservation_id', $reservation->id)
+                    ->whereIn('room_id', $roomIdsToDelete)
+                    ->delete();
+
+                // Then delete from rooms table
+                Room::whereIn('id', $roomIdsToDelete)->delete();
+            }
             DB::commit();
             return redirect()->back();
         } catch (Exception $e) {
@@ -344,6 +356,4 @@ class ReservationController extends Controller
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
-
-
 }

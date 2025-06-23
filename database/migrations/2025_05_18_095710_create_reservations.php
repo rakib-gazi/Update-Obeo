@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('status_id')->nullable()
                 ->constrained('reservation_statuses')
                 ->restrictOnDelete()->cascadeOnUpdate();
-            $table->bigInteger('reservation_no' )->unique();
+            $table->string('reservation_no' )->unique();
             $table->date('check_in' );
             $table->date('check_out' );
             $table->date('reservation_date' );

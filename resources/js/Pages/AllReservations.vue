@@ -374,25 +374,28 @@ const handleSubmit = () => {
     reservationData.reservation_date = reservationData.reservation_date ? dayjs(reservationData.reservation_date).format('YYYY-MM-DD') : null;
     reservationData.children = childAges.value
         .filter(age => age !== '')
-        .map(age => ({ age }));
+        .map(age => ({
+            id: age.id,
+            age: age.age
+        }));
     reservationData.rooms = rooms.value.map(room => ({
         ...room,
         currency_id: room.currency_id?.id || null
     }));
     console.log(reservationData);
-    // reservationData.put(`/dashboard/settings/update-payment-method/${editingUserId}`, {
-    //     onSuccess: () => {
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Payment Method updated successfully',
-    //             showConfirmButton: false,
-    //             timer: 1000
-    //         });
-    //         closeModal();
-    //         fetchUsers();
-    //     },
-    //     onFinish: () => isSubmitting.value = false
-    // });
+    reservationData.put(`/dashboard/update-reservation/${editingUserId}`, {
+        onSuccess: () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Payment Method updated successfully',
+                showConfirmButton: false,
+                timer: 1000
+            });
+            closeModal();
+            fetchUsers();
+        },
+        onFinish: () => isSubmitting.value = false
+    });
 };
 </script>
 
@@ -1151,14 +1154,47 @@ const handleSubmit = () => {
                                                 </div>
 
                                                 <!-- Add Room Button (Only show on last room) -->
-                                                <div v-if="index === rooms.length - 1">
-                                                    <button @click="addRoom"
-                                                            class="w-full h-11 flex items-center justify-center border-2 border-dashed border-blue-400 rounded-md text-blue-600 hover:bg-blue-100">
+<!--                                                    <div v-if="index === rooms.length - 1">-->
+<!--                                                        <div v-if="rooms.length > 1 && index !== rooms.length - 1">-->
+<!--                                                            <button type="button" @click="removeRoom(index)" class="w-full h-11 flex items-center justify-center border-2 border-dashed border-red-600 rounded-md text-red-700 hover:bg-red-100 ">-->
+<!--                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">-->
+<!--                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />-->
+<!--                                                                </svg>-->
+<!--                                                            </button>-->
+<!--                                                        </div>-->
+<!--                                                        <button @click="addRoom"-->
+<!--                                                                class="w-full h-11 flex items-center justify-center border-2 border-dashed border-blue-400 rounded-md text-blue-600 hover:bg-blue-100">-->
+<!--                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">-->
+<!--                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />-->
+<!--                                                            </svg>-->
+<!--                                                        </button>-->
+<!--                                                    </div>-->
+                                                <!-- Show both buttons only on the last index -->
+                                                <div v-if="index === rooms.length - 1" class="flex gap-2">
+                                                    <!-- Remove Button (only if more than 1 room) -->
+                                                    <button
+                                                        v-if="rooms.length > 1"
+                                                        type="button"
+                                                        @click="removeRoom(index)"
+                                                        class="w-full h-11 flex items-center justify-center border-2 border-dashed border-red-600 rounded-md text-red-700 hover:bg-red-100"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                        </svg>
+                                                    </button>
+
+                                                    <!-- Add Button -->
+                                                    <button
+                                                        type="button"
+                                                        @click="addRoom"
+                                                        class="w-full h-11 flex items-center justify-center border-2 border-dashed border-blue-400 rounded-md text-blue-600 hover:bg-blue-100"
+                                                    >
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                         </svg>
                                                     </button>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
