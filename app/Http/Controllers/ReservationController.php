@@ -10,8 +10,10 @@ use App\Models\Rate;
 use App\Models\Reservation;
 use App\Models\ReservationChild;
 use App\Models\ReservationRoom;
+use App\Models\ReservationStatus;
 use App\Models\Room;
 use App\Models\Source;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -172,6 +174,7 @@ class ReservationController extends Controller
         $currencies = Currency::select('id', 'currency')->get();
         $sources = Source::select('id','source')->get();
         $payments = PaymentMethod::select('id', 'payment')->get();
+        $status = ReservationStatus::select('id', 'status')->get();
         $reservations = Reservation::with([
             'reservation_status:id,status',
             'hotel:id,hotelName',
@@ -180,8 +183,6 @@ class ReservationController extends Controller
             'source:id,source',
             'paymentMethod:id,payment',
             'children:id,age',
-
-
             'rooms' => function ($query) {
                 $query->select('rooms.id', 'name', 'total_room', 'total_night', 'total_price', 'currency_id')
                     ->with('currency:id,currency');
@@ -212,17 +213,65 @@ class ReservationController extends Controller
             'rates' => $rates,
             'currencies' => $currencies,
             'sources' => $sources,
+            'payments' => $payments,
+            'status' => $status
+        ]);
+//        return response()->json($reservations);
+    }
+    // only today added reservation
+    function getTodayAddedReservations()
+    {
+        $hotels =  Hotel::select('id', 'hotelName')->get();
+        $rates = Rate::select('id', 'rate')->get();
+        $currencies = Currency::select('id', 'currency')->get();
+        $sources = Source::select('id','source')->get();
+        $payments = PaymentMethod::select('id', 'payment')->get();
+        $reservations = Reservation::whereDate('created_at', Carbon::today())->with([
+            'reservation_status:id,status',
+            'hotel:id,hotelName',
+            'rate:id,rate',
+            'currency:id,currency',
+            'source:id,source',
+            'paymentMethod:id,payment',
+            'children:id,age',
+            'rooms' => function ($query) {
+                $query->select('rooms.id', 'name', 'total_room', 'total_night', 'total_price', 'currency_id')
+                    ->with('currency:id,currency');
+            }
+        ])->get()
+            ->makeHidden([
+                'hotel_id', 'rate_id', 'currency_id', 'source_id', 'payment_method_id'
+            ])
+            ->map(function ($reservation) {
+                // Remove pivot from children
+                $reservation->children->transform(function ($child) {
+                    unset($child->pivot);
+                    return $child;
+                });
+
+                // Optionally remove pivot from rooms too
+                $reservation->rooms->transform(function ($room) {
+                    unset($room->pivot);
+                    return $room;
+                });
+
+                return $reservation;
+            });
+
+        return Inertia::render('TodayAddedReservations', [
+            'reservations' => $reservations,
+            'hotels' => $hotels,
+            'rates' => $rates,
+            'currencies' => $currencies,
+            'sources' => $sources,
             'payments' => $payments
         ]);
 //        return response()->json($reservations);
     }
-
+    // update reservation
     function updateReservation(Request $request, $id)
     {
-//        Log::info('Frontend Data: ' . json_encode([
-//                'id' => $id,
-//                'data' => $request->all()
-//            ], JSON_PRETTY_PRINT));
+
         $messages = [
             'reservation_no.regex' => 'Reservation number must be a number.',
             'hotel_id.required' =>'The hotel is required',
@@ -303,6 +352,55 @@ class ReservationController extends Controller
                 'request' => $data['request'],
                 'comment' => $data['comment'],
             ]);
+
+
+            // Handle children
+            $currentChildIds = $reservation->children()->pluck('children.id')->toArray();
+            $updatedChildIds = [];
+
+            if (!empty($data['children'])) {
+                foreach ($data['children'] as $childData) {
+                    if (!empty($childData['id'])) {
+                        // Update existing child
+                        $child = Child::find($childData['id']);
+                        if ($child) {
+                            $child->update(['age' => $childData['age']]);
+                            $updatedChildIds[] = $child->id;
+
+                            // Make sure the pivot exists
+                            ReservationChild::updateOrCreate([
+                                'reservation_id' => $reservation->id,
+                                'child_id' => $child->id,
+                            ]);
+                        }
+                    } else {
+                        // New child
+                        $child = Child::create(['age' => $childData['age']]);
+                        ReservationChild::create([
+                            'reservation_id' => $reservation->id,
+                            'child_id' => $child->id,
+                        ]);
+                        $updatedChildIds[] = $child->id;
+                    }
+                }
+            }
+
+            // Delete removed children (both pivot & child)
+            $childIdsToDelete = array_diff($currentChildIds, $updatedChildIds);
+
+            if (!empty($childIdsToDelete)) {
+                // Delete pivot records
+                ReservationChild::where('reservation_id', $reservation->id)
+                    ->whereIn('child_id', $childIdsToDelete)
+                    ->delete();
+
+                // Delete the child records
+                Child::whereIn('id', $childIdsToDelete)->delete();
+            }
+
+
+
+
             $currentRoomIds = $reservation->rooms()->pluck('rooms.id')->toArray();
             $updatedRoomIds = [];
             foreach ($data['rooms'] as $roomData) {
@@ -328,9 +426,6 @@ class ReservationController extends Controller
                 }
 
                 $updatedRoomIds[] = $room->id;
-                Log::info('Founded Room ID: ' . json_encode([
-                        'data' => $updatedRoomIds
-                    ]));
                 ReservationRoom::updateOrCreate(
                     [
                         'reservation_id' => $reservation->id,
@@ -356,4 +451,47 @@ class ReservationController extends Controller
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+    public function deleteReservation(Request $request)
+    {
+        $id = $request->id;
+
+        DB::beginTransaction();
+
+        try {
+            $reservation = Reservation::find($id);
+
+            if (!$reservation) {
+                return redirect()->back()->withErrors('Reservation not found.');
+            }
+
+            // Get related room and child IDs
+            $roomIds = $reservation->rooms()->pluck('rooms.id')->toArray();
+            $childIds = $reservation->children()->pluck('children.id')->toArray();
+
+            // Delete pivot table records first (no detach, direct delete)
+            DB::table('reservation_rooms')->where('reservation_id', $id)->delete();
+            DB::table('reservation_children')->where('reservation_id', $id)->delete();
+
+            // Then delete related child and room records
+            Room::whereIn('id', $roomIds)->delete();
+            Child::whereIn('id', $childIds)->delete();
+
+            // Finally delete the reservation itself
+            $reservation->delete();
+
+            DB::commit();
+
+            return redirect()->back()->with([
+                'message' => 'Reservation deleted successfully.',
+                'status' => true,
+                'error' => ''
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+    }
+
+
 }

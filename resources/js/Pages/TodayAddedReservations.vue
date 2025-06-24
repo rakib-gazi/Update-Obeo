@@ -24,8 +24,6 @@ const formRates = ref(usePage().props.rates);
 const formCurrencies = ref(usePage().props.currencies);
 const formSources = ref(usePage().props.sources);
 const formPayments = ref(usePage().props.payments);
-const formStatus = ref(usePage().props.status);
-const reservationStatus = formStatus.value;
 const isModalOpen = ref(false);
 const isSubmitting = ref(false);
 let editingUserId = null;
@@ -264,9 +262,8 @@ const tableHeaders = [
     { text: 'C/OUT', value: 'check_out' },
     { text: 'Name', value: 'guest_name' },
     { text: 'Hotel', value: 'hotel.hotelName' },
-    // { text: 'Room', value: 'rooms' },
+    { text: 'Room', value: 'rooms' },
     { text: 'Total Price',  value: 'total_price_bdt' },
-    { text: 'Status',  value: 'status_id' },
     { text: 'Actions', value: 'actions' },
 ];
 function getTotalPriceInBDT(rooms, rate) {
@@ -381,16 +378,6 @@ const handleSubmit = () => {
         onFinish: () => isSubmitting.value = false
     });
 };
-const onStatusChange = (event, item) => {
-    const selectedId = event.target.value;
-    item.status_id = selectedId;
-
-    // Now you can do something with it
-    console.log('Changed status to:', selectedId, 'for item:', item);
-
-    // You can also emit or call a backend update here
-    // updateStatus(item.id, selectedId);
-};
 </script>
 
 <template>
@@ -405,11 +392,11 @@ const onStatusChange = (event, item) => {
                     Go Back
                 </Link>
 
-                <Link href="/dashboard/reservations/today-added-reservations" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
+                <Link href="/dashboard/reservations/all-reservations" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
                     </svg>
-                    Today Added Reservations
+                    All Reservations
                 </Link>
             </div>
 
@@ -1229,48 +1216,28 @@ const onStatusChange = (event, item) => {
                         {{item.guest_name }}
                     </div>
                 </template>
-<!--                <template #item-rooms="{ rooms }">-->
-<!--                    <div class="space-y-1">-->
-<!--                        <div v-for="(room, index) in rooms" :key="index" class="text-sm text-gray-700">-->
-<!--                            <strong>{{ room.name }}</strong>-->
-<!--                            <p class="flex justify-start items-center gap-1">R*{{ room.total_room }}-->
-<!--                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">-->
-<!--                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />-->
-<!--                                </svg>-->
-<!--                                N*{{ room.total_night }}-->
-<!--                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">-->
-<!--                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />-->
-<!--                                </svg>-->
-<!--                                {{ room.total_price }} {{ room.currency?.currency ?? '' }}-->
-<!--                            </p>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </template>-->
-                <template #item-total_price_bdt="item">
+                <template #item-rooms="{ rooms }">
+                    <div class="space-y-1">
+                        <div v-for="(room, index) in rooms" :key="index" class="text-sm text-gray-700">
+                            <strong>{{ room.name }}</strong>
+                            <p class="flex justify-start items-center gap-1">R*{{ room.total_room }}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                                </svg>
+                                N*{{ room.total_night }}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                                </svg>
+                                {{ room.total_price }} {{ room.currency?.currency ?? '' }}
+                            </p>
+                        </div>
+                    </div>
+                </template>
+                <template #item-total_price_bdt="item" >
                     <div class="text-sm font-semibold text-green-700">
                         {{ getTotalPriceInBDT(item.rooms,item.rate.rate) }} BDT
                     </div>
                 </template>
-                <template #item-status_id="item">
-                    <div class="text-sm font-semibold">
-                        <!-- Reservation Status -->
-                        <select
-                            :value="item.status_id"
-                            @change="onStatusChange($event, item)"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg border-0 bg-transparent  focus:border-0 block w-full p-2.5 "
-                        >
-                            <option disabled value="">Select status</option>
-                            <option
-                                v-for="status in reservationStatus"
-                                :key="status.id"
-                                :value="status.id"
-                            >
-                                {{ status.status }}
-                            </option>
-                        </select>
-                    </div>
-                </template>
-
                 <template #expand="item">
                     <div class="p-4 grid grid-cols-4 gap-2">
                         <div>
