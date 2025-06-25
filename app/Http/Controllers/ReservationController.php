@@ -13,6 +13,7 @@ use App\Models\ReservationRoom;
 use App\Models\ReservationStatus;
 use App\Models\Room;
 use App\Models\Source;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -27,6 +28,10 @@ class ReservationController extends Controller
     function reservations(Request $request)
     {
         return Inertia::render('Reservations');
+    }
+    function reservationCopy(Request $request)
+    {
+        return Inertia::render('Copy');
     }
     //Reservation form
     function reservation(Request $request)
@@ -334,7 +339,7 @@ class ReservationController extends Controller
             $reservation = Reservation::findOrFail($id);
 
             $reservation->update([
-                'status _id' => $data['status_id'] ?? null,
+                'status_id' => $data['status_id'] ?? null,
                 'reservation_no' => $data['reservation_no'],
                 'check_in' => $data['check_in'],
                 'check_out' => $data['check_out'],
@@ -493,5 +498,30 @@ class ReservationController extends Controller
         }
     }
 
+    function updateStatus(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'status_id' => 'required|exists:reservation_statuses,id',
+            ]);
+            $reservation = Reservation::findOrFail($id);
+            $reservation->update([
+                'status_id' => $request->status_id,
+            ]);
+            DB::commit();
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
 
+    public function downloadPdf($id)
+    {
+        $reservation = Reservation::with(['hotel', 'status', 'currency'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.reservationCopy', compact('reservation'));
+        return $pdf->download("reservation-{$id}.pdf");
+    }
 }

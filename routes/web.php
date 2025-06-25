@@ -32,12 +32,14 @@ Route::middleware([TokenVerificationMiddleware::class])
 
         // settings route
         Route::get('/dashboard/reservations',[ReservationController::class, 'reservations'])->name('reservations');
+        Route::get('/dashboard/copy',[ReservationController::class, 'reservationCopy'])->name('reservationCopy');
         // reservation
         Route::get('/dashboard/add-reservation',[ReservationController::class, 'reservation'])->name('reservation');
         Route::get('/dashboard/reservations/all-reservations',[ReservationController::class, 'getAllReservations'])->name('getAllReservations');
         Route::get('/dashboard/reservations/today-added-reservations',[ReservationController::class, 'getTodayAddedReservations'])->name('getTodayAddedReservations');
         Route::post('/dashboard/add-reservation',[ReservationController::class,'addreservation'])->name('add-reservation');
         Route::put('/dashboard/update-reservation/{id}',[ReservationController::class,'updateReservation'])->name('updateReservation');
+        Route::patch('/dashboard/update-status/{id}',[ReservationController::class,'updateStatus'])->name('updateStatus');
         Route::get('/dashboard/delete-reservation/{id}', [ReservationController::class,'deleteReservation'])->name('deleteReservation');
 
         // settings route
@@ -79,4 +81,10 @@ Route::middleware([TokenVerificationMiddleware::class])
         Route::post('/dashboard/settings/add-reservation-status',[SettingsController::class,'addReservationStatus'])->name('addReservationStatus');
         Route::put('/dashboard/settings/update-reservation-status/{id}',[SettingsController::class,'updateReservationStatus'])->name('updateReservationStatus');
         Route::get('/dashboard/settings/delete-reservation-status/{id}', [SettingsController::class,'deleteReservationStatus'])->name('deleteReservationStatus');
+
+        // pdf download route
+        Route::get('/reservations/{id}/download', [ReservationController::class, 'downloadPdf'])
+            ->name('reservations.download');
+
+
     });

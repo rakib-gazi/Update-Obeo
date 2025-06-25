@@ -381,16 +381,27 @@ const handleSubmit = () => {
         onFinish: () => isSubmitting.value = false
     });
 };
-const onStatusChange = (event, item) => {
+const onStatusChange = (event, id) => {
     const selectedId = event.target.value;
-    item.status_id = selectedId;
-
-    // Now you can do something with it
-    console.log('Changed status to:', selectedId, 'for item:', item);
-
-    // You can also emit or call a backend update here
-    // updateStatus(item.id, selectedId);
+    router.patch(`/dashboard/update-status/${id}`, {
+        status_id: selectedId
+    }, {
+        onSuccess: () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Status updated successfully',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        },
+    });
 };
+const handleDownload = (id) => {
+    if (!id) return;
+
+    // Opens Laravel PDF route in a new tab/window
+    window.open(route(`/reservations/${id}/download`), '_blank');
+}
 </script>
 
 <template>
@@ -1256,8 +1267,8 @@ const onStatusChange = (event, item) => {
                         <!-- Reservation Status -->
                         <select
                             :value="item.status_id"
-                            @change="onStatusChange($event, item)"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg border-0 bg-transparent  focus:border-0 block w-full p-2.5 "
+                            @change="onStatusChange($event, item.id)"
+                            class="bg-gray-50  border-gray-300 text-gray-900 text-sm rounded-lg border-0 bg-transparent  focus:border-0 block w-full p-2.5 "
                         >
                             <option disabled value="">Select status</option>
                             <option
@@ -1316,6 +1327,9 @@ const onStatusChange = (event, item) => {
                 </template>
                 <template #item-actions="item">
                     <div class="flex gap-2">
+                        <button @click=" handleDownload(item.id)">
+                            Download PDF
+                        </button>
                         <button @click="handleEdit(item)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
                             Edit
                         </button>
