@@ -23,40 +23,40 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                         <hr class="border border-black">
                         <table class="w-full mt-2  ">
                             <tr class=" ">
-                                <th class="w-1/2 font-serif text-left">Booking Number</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Booking Number</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Check In</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Check In</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Check Out</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Check Out</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
                                 <th class="w-1/2 font-seri text-left">Booking Date</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left align-top">Guest Name</th>
-                                <td class="w-1/2 text-black font-serif text-left align-top"></td>
+                                <th class="w-1/2  text-left align-top">Guest Name</th>
+                                <td class="w-1/2 text-black  text-left align-top"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left align-top">Room Name</th>
-                                <td class="w-1/2 text-black font-serif text-left align-top"></td>
+                                <th class="w-1/2  text-left align-top">Room Name</th>
+                                <td class="w-1/2 text-black  text-left align-top"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Total Room</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Total Room</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Total Night</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Total Night</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Booking Source</th>
-                                <td class="w-1/2 text-black font-serif text-left"></td>
+                                <th class="w-1/2  text-left">Booking Source</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                         </table>
                     </div>
@@ -65,39 +65,39 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                 <div>
                     <!-- Hotel Name -->
                     <div class="bg-cyan-950 p-4 rounded-lg mb-4">
-                        <h3 class="text-xl font-serif text-center font-bold text-white py-1"></h3>
+                        <h3 class="text-xl  text-center font-bold text-white py-1"></h3>
                     </div>
                     <div class="bg-gray-100 p-4 mt-4 rounded-lg shadow shadow-black">
                         <h2 class="text-xl font-semibold mb-1 text-cyan-950 font-obeo">Payment & Pricing</h2>
                         <hr class="border border-black">
                         <table class="w-full mt-2">
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Price (USD)</th>
-                                <td class="w-1/2 text-black font-rflex"> USD</td>
+                                <th class="w-1/2 ">Price (USD)</th>
+                                <td class="w-1/2 text-black "> USD</td>
                             </tr>
                             <tr class="text-left">
                                 <th class="w-1/2">Exchange Rate</th>
-                                <td class="w-1/2 text-black font-rflex">
+                                <td class="w-1/2 text-black ">
                                     TK
                                 </td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Price (BDT)</th>
-                                <td class="w-1/2 text-black font-rflex">TK
+                                <th class="w-1/2 ">Total Price (BDT)</th>
+                                <td class="w-1/2 text-black ">TK
                                 </td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Advance</th>
-                                <td class="w-1/2 text-black font-rflex">TK
+                                <th class="w-1/2 ">Total Advance</th>
+                                <td class="w-1/2 text-black ">TK
                                 </td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Pay In Hotel</th>
-                                <td class="w-1/2 text-black font-rflex"> TK</td>
+                                <th class="w-1/2 ">Total Pay In Hotel</th>
+                                <td class="w-1/2 text-black "> TK</td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Payment Method</th>
-                                <td class="w-1/2 text-black font-serif"></td>
+                                <th class="w-1/2 ">Payment Method</th>
+                                <td class="w-1/2 text-black "></td>
                             </tr>
                         </table>
                     </div>
@@ -107,8 +107,8 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                         <hr class="border border-black">
                         <table class="w-full mt-2">
                             <tr class="">
-                                <th class="w-3/5 font-serif text-left text-medium">Phone Number</th>
-                                <td class="w-2/5 text-black font-rflex text-center text-sm"></td>
+                                <th class="w-3/5  text-left text-medium">Phone Number</th>
+                                <td class="w-2/5 text-black  text-center text-sm"></td>
                             </tr>
                         </table>
                     </div>
@@ -124,16 +124,16 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                 <div class="bg-gray-100 px-4 py-2 rounded-lg shadow shadow-black">
                     <table class="w-full mt-2">
                         <tr class="text-left">
-                            <th class="w-2/3 font-serif"></th>
-                            <td class="w-1/3 text-black font-rflex"></td>
+                            <th class="w-2/3 "></th>
+                            <td class="w-1/3 text-black "></td>
                         </tr>
                         <tr class="text-left">
-                            <th class="w-2/3 font-serif">Total Night</th>
-                            <td class="w-1/3 text-black font-rflex"></td>
+                            <th class="w-2/3 ">Total Night</th>
+                            <td class="w-1/3 text-black "></td>
                         </tr>
                         <tr class="text-left">
-                            <th class="w-2/3 font-serif">Price Per Night</th>
-                            <td class="w-1/3 text-black font-rflex"> TK</td>
+                            <th class="w-2/3 ">Price Per Night</th>
+                            <td class="w-1/3 text-black "> TK</td>
                         </tr>
                     </table>
                 </div>
@@ -143,31 +143,31 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
             <div class="bg-gray-100 px-4 py-2 rounded-lg mt-4 shadow shadow-black">
                 <table class="w-full mt-2">
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start"></th>
-                        <td class="w-1/2 text-black font-rflex text-start"></td>
+                        <th class="w-1/2  text-start"></th>
+                        <td class="w-1/2 text-black  text-start"></td>
                     </tr>
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start">Price Per Night (<span class="font-rflex">1</span> Room)
+                        <th class="w-1/2  text-start">Price Per Night (<span class="">1</span> Room)
                         </th>
-                        <td class="w-1/2 text-black font-rflex text-start">
+                        <td class="w-1/2 text-black  text-start">
 
                         </td>
                     </tr>
 
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start">Price Per Night (<span class="font-rflex"></span>
+                        <th class="w-1/2  text-start">Price Per Night (<span class=""></span>
                             Room)
                         </th>
-                        <td class="w-1/2 text-black font-rflex text-start">
+                        <td class="w-1/2 text-black  text-start">
                         </td>
                     </tr>
 
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start">Total (<span
-                            class="font-rflex"></span> Room <span
-                            class="font-rflex"></span> Night)
+                        <th class="w-1/2  text-start">Total (<span
+                            class=""></span> Room <span
+                            class=""></span> Night)
                         </th>
-                        <td class="w-1/2 text-black font-rflex text-start">
+                        <td class="w-1/2 text-black  text-start">
                         </td>
                     </tr>
                 </table>
@@ -177,8 +177,8 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
             <div class="bg-gray-200 p-4 rounded-lg mt-4 shadow shadow-black">
                 <table class="w-full mt-2">
                     <tr class="flex justify-center items-start">
-                        <th class="w-1/6 font-serif">Comments</th>
-                        <td class="w-5/6 text-black font-serif"></td>
+                        <th class="w-1/6 ">Comments</th>
+                        <td class="w-5/6 text-black "></td>
                     </tr>
                 </table>
             </div>
@@ -196,40 +196,40 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                         <hr class="border border-black">
                         <table class="w-full mt-2  ">
                             <tr class=" ">
-                                <th class="w-1/2 font-serif text-left">Booking Number</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Booking Number</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Check In</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Check In</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Check Out</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Check Out</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
                                 <th class="w-1/2 font-seri text-left">Booking Date</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left align-top">Guest Name</th>
-                                <td class="w-1/2 text-black font-serif text-left align-top"></td>
+                                <th class="w-1/2  text-left align-top">Guest Name</th>
+                                <td class="w-1/2 text-black  text-left align-top"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left align-top">Room Name</th>
-                                <td class="w-1/2 text-black font-serif text-left align-top"></td>
+                                <th class="w-1/2  text-left align-top">Room Name</th>
+                                <td class="w-1/2 text-black  text-left align-top"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Total Room</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Total Room</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Total Night</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
+                                <th class="w-1/2  text-left">Total Night</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                             <tr class="">
-                                <th class="w-1/2 font-serif text-left">Booking Source</th>
-                                <td class="w-1/2 text-black font-serif text-left"></td>
+                                <th class="w-1/2  text-left">Booking Source</th>
+                                <td class="w-1/2 text-black  text-left"></td>
                             </tr>
                         </table>
                     </div>
@@ -238,39 +238,39 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                 <div>
                     <!-- Hotel Name -->
                     <div class="bg-cyan-950 p-4 rounded-lg mb-4">
-                        <h3 class="text-xl font-serif text-center font-bold text-white py-1"></h3>
+                        <h3 class="text-xl  text-center font-bold text-white py-1"></h3>
                     </div>
                     <div class="bg-gray-100 p-4 mt-4 rounded-lg shadow shadow-black">
                         <h2 class="text-xl font-semibold mb-1 text-cyan-950 font-obeo">Payment & Pricing</h2>
                         <hr class="border border-black">
                         <table class="w-full mt-2">
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Price (USD)</th>
-                                <td class="w-1/2 text-black font-rflex"></td>
+                                <th class="w-1/2 ">Price (USD)</th>
+                                <td class="w-1/2 text-black "></td>
                             </tr>
                             <tr class="text-left">
                                 <th class="w-1/2">Exchange Rate</th>
-                                <td class="w-1/2 text-black font-rflex">
+                                <td class="w-1/2 text-black ">
                                     TK
                                 </td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Price (BDT)</th>
-                                <td class="w-1/2 text-black font-rflex">TK
+                                <th class="w-1/2 ">Total Price (BDT)</th>
+                                <td class="w-1/2 text-black ">TK
                                 </td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Advance</th>
-                                <td class="w-1/2 text-black font-rflex">TK
+                                <th class="w-1/2 ">Total Advance</th>
+                                <td class="w-1/2 text-black ">TK
                                 </td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Pay In Hotel</th>
-                                <td class="w-1/2 text-black font-rflex"> TK</td>
+                                <th class="w-1/2 ">Total Pay In Hotel</th>
+                                <td class="w-1/2 text-black "> TK</td>
                             </tr>
                             <tr class="text-left">
-                                <th class="w-1/2 font-serif">Payment Method</th>
-                                <td class="w-1/2 text-black font-serif"></td>
+                                <th class="w-1/2 ">Payment Method</th>
+                                <td class="w-1/2 text-black "></td>
                             </tr>
                         </table>
                     </div>
@@ -280,8 +280,8 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                         <hr class="border border-black">
                         <table class="w-full mt-2">
                             <tr class="">
-                                <th class="w-3/5 font-serif text-left text-medium">Phone Number</th>
-                                <td class="w-2/5 text-black font-rflex text-center text-sm"></td>
+                                <th class="w-3/5  text-left text-medium">Phone Number</th>
+                                <td class="w-2/5 text-black  text-center text-sm"></td>
                             </tr>
                         </table>
                     </div>
@@ -295,16 +295,16 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                 <div class="bg-gray-100 px-4 py-2 rounded-lg shadow shadow-black">
                     <table class="w-full mt-2">
                         <tr class="text-left">
-                            <th class="w-2/3 font-serif"></th>
-                            <td class="w-1/3 text-black font-rflex"></td>
+                            <th class="w-2/3 "></th>
+                            <td class="w-1/3 text-black "></td>
                         </tr>
                         <tr class="text-left">
-                            <th class="w-2/3 font-serif">Total Night</th>
-                            <td class="w-1/3 text-black font-rflex"></td>
+                            <th class="w-2/3 ">Total Night</th>
+                            <td class="w-1/3 text-black "></td>
                         </tr>
                         <tr class="text-left">
-                            <th class="w-2/3 font-serif">Price Per Night</th>
-                            <td class="w-1/3 text-black font-rflex"> TK</td>
+                            <th class="w-2/3 ">Price Per Night</th>
+                            <td class="w-1/3 text-black "> TK</td>
                         </tr>
                     </table>
                 </div>
@@ -314,32 +314,32 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
             <div class="bg-gray-100 px-4 py-2 rounded-lg mt-4 shadow shadow-black">
                 <table class="w-full mt-2">
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start">'.$row["room"] .'</th>
-                        <td class="w-1/2 text-black font-rflex text-start">'.$room_format.'</td>
+                        <th class="w-1/2  text-start">'.$row["room"] .'</th>
+                        <td class="w-1/2 text-black  text-start">'.$room_format.'</td>
                     </tr>
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start">Price Per Night (<span class="font-rflex">1</span> Room)
+                        <th class="w-1/2  text-start">Price Per Night (<span class="">1</span> Room)
                         </th>
-                        <td class="w-1/2 text-black font-rflex text-start">
+                        <td class="w-1/2 text-black  text-start">
                             '.number_format($price_one_single_type_room_one_night,2).'TK
                         </td>
                     </tr>
 
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start">Price Per Night (<span class="font-rflex">'.$row['total_room'].'</span>
+                        <th class="w-1/2  text-start">Price Per Night (<span class="">'.$row['total_room'].'</span>
                             Room)
                         </th>
-                        <td class="w-1/2 text-black font-rflex text-start">'.number_format(
+                        <td class="w-1/2 text-black  text-start">'.number_format(
                             $price_one_single_type_room_one_night*$row['total_room'] ,2).'TK
                         </td>
                     </tr>
 
                     <tr class="">
-                        <th class="w-1/2 font-serif text-start">Total (<span
-                            class="font-rflex">'.$row['total_room'].'</span> Room <span
-                            class="font-rflex">'.$row['night'].'</span> Night)
+                        <th class="w-1/2  text-start">Total (<span
+                            class="">'.$row['total_room'].'</span> Room <span
+                            class="">'.$row['night'].'</span> Night)
                         </th>
-                        <td class="w-1/2 text-black font-rflex text-start">'.number_format(
+                        <td class="w-1/2 text-black  text-start">'.number_format(
                             $total_full_price_single_type_room ,2).'TK
                         </td>
                     </tr>
@@ -350,8 +350,8 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
             <div class="bg-gray-200 p-4 rounded-lg mt-4 shadow shadow-black">
                 <table class="w-full mt-2">
                     <tr class="flex justify-center items-start">
-                        <th class="w-1/6 font-serif">Comments</th>
-                        <td class="w-5/6 text-black font-serif"></td>
+                        <th class="w-1/6 ">Comments</th>
+                        <td class="w-5/6 text-black "></td>
                     </tr>
                 </table>
             </div>

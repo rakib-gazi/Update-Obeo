@@ -2,187 +2,114 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import logo from '../../images/logo.png';
 import booking from '../../images/booking.png';
+import obeologo from '../../images/obeologo.png';
 </script>
 
 <template>
     <AdminLayout>
-        <div class="max-w-4xl mx-auto bg-white px-4 pt-4 shadow-md rounded-lg">
+        <div class="max-w-4xl mx-auto bg-gray-50 p-6 shadow-md rounded-lg">
             <!-- Header -->
-            <div class=" p-4 rounded-t-lg mb-4  flex justify-between items-center">
-                <img :src="logo" alt="Logo" class="h-16">
-                <h1 class="text-3xl font-extrabold text-cyan-950">Hotel Reservation</h1>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <!-- Left Column -->
-                <div>
-                    <!-- Booking Source -->
-                    <div class="p-4 rounded-lg flex justify-center items-center">
+            <div class=" p-4 rounded-2xl shadow-md mb-4  flex justify-between items-center bg-white">
+                <img :src="obeologo" alt="Logo" class="h-24">
+                <div class="text-right">
+                    <div class="flex justify-end">
                         <img :src="booking" alt="Reservation Source" class="h-6">
                     </div>
-                    <div class="p-4 rounded-lg mt-4 min-h-[347px]">
-                        <h2 class="text-xl font-semibold mb-1 text-cyan-950 font-obeo">Reservation Information</h2>
-                        <hr class="border border-black">
-                        <table class="w-full mt-2  ">
-                            <tr class=" ">
-                                <th class="w-1/2 font-serif text-left">Booking Number</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-serif text-left">Check In</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-serif text-left">Check Out</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-seri text-left">Booking Date</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-serif text-left align-top">Guest Name</th>
-                                <td class="w-1/2 text-black font-serif text-left align-top"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-serif text-left align-top">Room Name</th>
-                                <td class="w-1/2 text-black font-serif text-left align-top"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-serif text-left">Total Room</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-serif text-left">Total Night</th>
-                                <td class="w-1/2 text-black font-rflex text-left"></td>
-                            </tr>
-                            <tr class="">
-                                <th class="w-1/2 font-serif text-left">Booking Source</th>
-                                <td class="w-1/2 text-black font-serif text-left"></td>
-                            </tr>
-                        </table>
-                    </div>
+                    <h1 class="text-3xl font-extrabold text-cyan-950">Hotel Reservation</h1>
+                    <h3 class="text-xl font-bold text-cyan-950 py-1">Hotel Royal Raj International</h3>
                 </div>
-                <!-- Right Column -->
-                <div>
-                    <!-- Hotel Name -->
-                    <div class=" p-4 rounded-lg mb-4">
-                        <h3 class="text-xl font-serif text-center font-bold text-cyan-950 py-1">Hotel Royal Raj International</h3>
+            </div>
+            <!-- Reservation information -->
+            <div class="rounded-2xl bg-white shadow-md mt-4">
+                        <h1 class="bg-cyan-950 py-2 text-white text-center rounded-t-2xl text-xl font-semibold ">Reservation Information</h1>
+                        <div class="p-4  flex justify-between">
+                            <div>
+                                <p class=" font-bold">Reservation #2229807022 </p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">Mohammed Rakib Gazi</h2>
+                                <p>Jun 26, 2025 - Jun 28, 2025 </p>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <p class=" font-bold">Obeo Sl #2229807022 </p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">3 Rooms & 2 Nights</h2>
+                                <p>Booked on - Jun 28, 2025 </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class=" p-4 mt-4 rounded-lg ">
-                        <h2 class="text-xl font-semibold mb-1 text-cyan-950 font-obeo">Payment & Pricing</h2>
-                        <hr class="border border-black">
-                        <table class="w-full mt-2">
-                            <tr class="text-left">
-                                <th class="w-1/2 font-serif">Price (USD)</th>
-                                <td class="w-1/2 text-black font-rflex"> USD</td>
-                            </tr>
-                            <tr class="text-left">
-                                <th class="w-1/2">Exchange Rate</th>
-                                <td class="w-1/2 text-black font-rflex">
-                                    TK
-                                </td>
-                            </tr>
-                            <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Price (BDT)</th>
-                                <td class="w-1/2 text-black font-rflex">TK
-                                </td>
-                            </tr>
-                            <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Advance</th>
-                                <td class="w-1/2 text-black font-rflex">TK
-                                </td>
-                            </tr>
-                            <tr class="text-left">
-                                <th class="w-1/2 font-serif">Total Pay In Hotel</th>
-                                <td class="w-1/2 text-black font-rflex"> TK</td>
-                            </tr>
-                            <tr class="text-left">
-                                <th class="w-1/2 font-serif">Payment Method</th>
-                                <td class="w-1/2 text-black font-serif"></td>
-                            </tr>
-                        </table>
+            <!--payment & Pricing  -->
+            <div class="rounded-2xl bg-white shadow-md mt-4">
+                        <h1 class="bg-cyan-950 py-2 text-white text-center rounded-t-2xl text-xl font-semibold ">Payment & Pricing </h1>
+                        <div class="p-4  grid grid-cols-3  gap-4">
+                            <div>
+                                <p class="text-sm font-bold">Price (USD) </p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">$37.00</h2>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <p class="text-sm font-bold">Exchange Rate </p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">122.00 TK</h2>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <p class="text-sm font-bold">Total Price (BDT) </p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">12200.00 TK</h2>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <p class="text-sm font-bold">Total Advance </p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">12200.00 TK</h2>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <p class="text-sm font-bold">Total Pay In Hotel</p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">12200.00 TK</h2>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <p class="text-sm font-bold">Payment Method</p>
+                                <h2 class="text-2xl font-semibold mb-1 text-cyan-950">Hotel Collects</h2>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Contact Information -->
-                    <div class="mt-4  p-4 rounded-lg ">
-                        <h2 class="text-xl font-semibold mb-1 text-cyan-950 font-obeo">Contact Information</h2>
-                        <hr class="border border-black">
-                        <table class="w-full mt-2">
-                            <tr class="">
-                                <th class="w-3/5 font-serif text-left text-medium">Phone Number</th>
-                                <td class="w-2/5 text-black font-rflex text-center text-sm"></td>
-                            </tr>
-                        </table>
+            <!-- Contact information -->
+            <div class="rounded-2xl bg-white shadow-md mt-4">
+                <h1 class="bg-cyan-950 py-2 text-white text-center rounded-t-2xl text-xl font-semibold ">Contact Information</h1>
+                <div class="p-4  flex justify-between">
+                    <div>
+                        <p class="text-sm font-bold">Phone </p>
+                        <h2 class="text-xl font-semibold mb-1 text-cyan-950">01876987622</h2>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Email </p>
+                        <h2 class="text-xl font-semibold mb-1 text-cyan-950">webobeorooms@gmail.com</h2>
                     </div>
                 </div>
             </div>
             <!-- Room Wise Payment Details -->
-            <div class="mt-4  px-4 py-2 rounded-lg ">
-                <h2 class="text-xl font-semibold  text-cyan-950 font-obeo">Room Wise Information & Price Details</h2>
-            </div>
-
-            <div class="mt-4 grid grid-cols-2  gap-4">
-
-                <div class=" px-4 py-2 rounded-lg ">
-                    <table class="w-full mt-2">
-                        <tr class="text-left">
-                            <th class="w-2/3 font-serif"></th>
-                            <td class="w-1/3 text-black font-rflex"></td>
-                        </tr>
-                        <tr class="text-left">
-                            <th class="w-2/3 font-serif">Total Night</th>
-                            <td class="w-1/3 text-black font-rflex"></td>
-                        </tr>
-                        <tr class="text-left">
-                            <th class="w-2/3 font-serif">Price Per Night</th>
-                            <td class="w-1/3 text-black font-rflex"> TK</td>
-                        </tr>
-                    </table>
+            <div class="rounded-2xl bg-white shadow-md mt-4">
+                <h1 class="bg-cyan-950 py-2 text-white text-center rounded-t-2xl text-xl font-semibold ">Room Wise Information & Price Details</h1>
+                <div class="p-4  flex justify-between">
+                    <div>
+                        <p class="text-sm font-bold">Room Name </p>
+                        <h2 class="text-xl font-semibold mb-1 text-cyan-950">Deluxe Single Room</h2>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Total Room & Nights </p>
+                        <h2 class="text-xl font-semibold mb-1 text-cyan-950">3 Rooms & 2 Nights</h2>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Price Per Night </p>
+                        <h2 class="text-xl font-semibold mb-1 text-cyan-950">7000.00 Tk</h2>
+                    </div>
                 </div>
-
             </div>
-
-            <div class=" px-4 py-2 rounded-lg mt-4 ">
-                <table class="w-full mt-2">
-                    <tr class="">
-                        <th class="w-1/2 font-serif text-start"></th>
-                        <td class="w-1/2 text-black font-rflex text-start"></td>
-                    </tr>
-                    <tr class="">
-                        <th class="w-1/2 font-serif text-start">Price Per Night (<span class="font-rflex">1</span> Room)
-                        </th>
-                        <td class="w-1/2 text-black font-rflex text-start">
-
-                        </td>
-                    </tr>
-
-                    <tr class="">
-                        <th class="w-1/2 font-serif text-start">Price Per Night (<span class="font-rflex"></span>
-                            Room)
-                        </th>
-                        <td class="w-1/2 text-black font-rflex text-start">
-                        </td>
-                    </tr>
-
-                    <tr class="">
-                        <th class="w-1/2 font-serif text-start">Total (<span
-                            class="font-rflex"></span> Room <span
-                            class="font-rflex"></span> Night)
-                        </th>
-                        <td class="w-1/2 text-black font-rflex text-start">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-
-            <!-- Comments -->
-            <div class=" p-4 rounded-lg mt-4 ">
-                <table class="w-full mt-2">
-                    <tr class="flex justify-center items-start">
-                        <th class="w-1/6 font-serif">Comments</th>
-                        <td class="w-5/6 text-black font-serif"></td>
-                    </tr>
-                </table>
+            <!-- Comments & Special Request -->
+            <div class="rounded-2xl bg-white shadow-md mt-4">
+                <h1 class="bg-cyan-950 py-2 text-white text-center rounded-t-2xl text-xl font-semibold ">Comments & Requests</h1>
+                <div class="p-4">
+                    <div>
+                        <p class="text-sm font-bold">Special Request </p>
+                        <h2 class="text-xl font-bold mb-1 text-cyan-950">Please Provide non smoking room</h2>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Comments </p>
+                        <h2 class="text-xl font-bold mb-1 text-cyan-950">This guest is our vip guest</h2>
+                    </div>
+                </div>
             </div>
 
 
