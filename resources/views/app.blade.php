@@ -10,6 +10,10 @@
     @vite('resources/js/app.js')
 
     @inertiaHead
+    @routes
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
 </head>
 <body class="bg-gray-200 font-nunito">
     @inertia

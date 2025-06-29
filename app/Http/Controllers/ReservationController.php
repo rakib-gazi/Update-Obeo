@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Spatie\Browsershot\Browsershot;
 
 class ReservationController extends Controller
 {
@@ -517,11 +518,28 @@ class ReservationController extends Controller
         }
     }
 
-    public function downloadPdf($id)
+    public function download(Request $request)
     {
-        $reservation = Reservation::with(['hotel', 'status', 'currency'])->findOrFail($id);
+        Log::info('PDF download request received', $request->all());
 
-        $pdf = Pdf::loadView('pdf.reservationCopy', compact('reservation'));
-        return $pdf->download("reservation-{$id}.pdf");
+        $data = $request->only(['guest_name', 'check_in', 'check_out']); // optional
+
+        try {
+            $html = view('pdf.reservationCopy', $data)->render();
+
+            $path = storage_path('app/public/reservation.pdf');
+
+            Browsershot::html($html)
+                ->format('A4')
+                ->margins(10, 10, 10, 10)
+                ->showBackground()
+                ->save($path);
+
+            return response()->download($path)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            Log::error('PDF generation failed', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'PDF generation failed'], 500);
+        }
     }
+
 }

@@ -83,8 +83,9 @@ Route::middleware([TokenVerificationMiddleware::class])
         Route::get('/dashboard/settings/delete-reservation-status/{id}', [SettingsController::class,'deleteReservationStatus'])->name('deleteReservationStatus');
 
         // pdf download route
-        Route::get('/reservations/{id}/download', [ReservationController::class, 'downloadPdf'])
-            ->name('reservations.download');
+        Route::post('/reservation/pdf', [ReservationController::class, 'download'])->name('reservation.pdf');
+
+
 
 
     });

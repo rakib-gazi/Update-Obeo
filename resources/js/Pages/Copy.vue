@@ -153,13 +153,11 @@ import obeologo from '../../images/obeologo.png';
                 </div>
             </div>
             <!-- Footer -->
-
             <div class="bg-white px-4 py-8 rounded-2xl my-4 shadow-md flex items-center">
                 <p class="flex-1 text-center text-Black font-semibold text-lg">&copy;  Obeo Limited.
                     All rights reserved.</p>
                 <p class="text-end text-black font-semibold text-sm">Printed by: Mohammed Rakib gazi</p>
             </div>
-
         </div>
     </AdminLayout>
 </template>

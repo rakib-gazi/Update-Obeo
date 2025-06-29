@@ -1,7 +1,9 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { router, useForm, usePage,Link } from "@inertiajs/vue3";
-import {computed, ref, watchEffect, reactive, onMounted } from 'vue';
+import {computed, ref, watchEffect, nextTick, onMounted } from 'vue';
+import html2pdf from 'html2pdf.js';
+import { route } from 'ziggy-js';
 import Swal from "sweetalert2";
 import {
     Combobox,
@@ -16,6 +18,8 @@ import {
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {CheckIcon, ChevronUpDownIcon} from "@heroicons/vue/20/solid/index.js";
+import obeologo from "../../images/obeologo.png";
+import booking from "../../images/booking.png";
 dayjs.extend(customParseFormat);
 
 const userData = ref(usePage().props.reservations);
@@ -396,17 +400,52 @@ const onStatusChange = (event, id) => {
         },
     });
 };
-const handleDownload = (id) => {
-    if (!id) return;
+const currentReservationCopy = ref({});
+const handleDownload = async (item) => {
+    console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-    // Opens Laravel PDF route in a new tab/window
-    window.open(route(`/reservations/${id}/download`), '_blank');
-}
+    try {
+        const response = await fetch(route('reservation.pdf'), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify({
+                guest_name: item.guest_name,
+                check_in: item.check_in,
+                check_out: item.check_out,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch PDF');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reservation.pdf'; // or dynamically set name from response headers
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Download failed:', error);
+    }
+};
+
+
+
 </script>
 
 <template>
     <AdminLayout>
-        <div>
+
+        <div >
             <div class="flex justify-between items-center">
                 <Link href="/dashboard/reservations" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -1327,7 +1366,7 @@ const handleDownload = (id) => {
                 </template>
                 <template #item-actions="item">
                     <div class="flex gap-2">
-                        <button @click=" handleDownload(item.id)">
+                        <button @click=" handleDownload(item)">
                             Download PDF
                         </button>
                         <button @click="handleEdit(item)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
@@ -1340,6 +1379,7 @@ const handleDownload = (id) => {
                 </template>
             </EasyDataTable>
         </div>
+
     </AdminLayout>
 </template>
 
