@@ -277,7 +277,6 @@ class ReservationController extends Controller
     // update reservation
     function updateReservation(Request $request, $id)
     {
-
         $messages = [
             'reservation_no.regex' => 'Reservation number must be a number.',
             'hotel_id.required' =>'The hotel is required',

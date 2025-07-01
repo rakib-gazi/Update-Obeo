@@ -27,7 +27,19 @@
         <img src="data:image/png;base64,{{ $logoData }}" alt="Logo" class="h-16">
         <div class="text-right">
             <div class="flex justify-end">
-                <img src="data:image/png;base64,{{ $bookingData }}" alt="Reservation Source" class="h-6">
+                @if ($source === 'Booking.com')
+                    <img src="data:image/png;base64,{{ $bookingData }}" alt="Reservation Source" class="h-6">
+                @elseif ($source === 'Expedia')
+                    <img src="data:image/png;base64,{{ $expediaData }}" alt="Reservation Source" class="h-8">
+                @elseif ($source === 'Airbnb')
+                    <img src="data:image/png;base64,{{ $airbnbData }}" alt="Reservation Source" class="h-8">
+                @elseif ($source === 'Ctrip')
+                    <img src="data:image/png;base64,{{ $cTripData }}" alt="Reservation Source" class="h-10">
+                @elseif ($source === 'Makemytrip')
+                    <img src="data:image/png;base64,{{ $makeData }}" alt="Reservation Source" class="h-10">
+                @else
+                    <h1 class="font-bold text-cyan-950 text-xl">Direct Booking</h1>
+                @endif
             </div>
             <h1 class="text-xl font-bold text-cyan-950">Hotel Reservation</h1>
             <h3 class="text-lg font-lg text-cyan-950">{{$hotelName}}</h3>
