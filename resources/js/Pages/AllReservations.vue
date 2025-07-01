@@ -400,10 +400,22 @@ const onStatusChange = (event, id) => {
         },
     });
 };
-const currentReservationCopy = ref({});
 const handleDownload = async (item) => {
-    console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+    let totalUsd = 0;
+    let totalBdt = 0;
 
+    item.rooms.forEach(room => {
+        const price = parseFloat(room.total_price) || 0;
+        const currency = room.currency?.currency;
+
+        if (currency === 'USD') {
+            totalUsd += price;
+            totalBdt += price * parseFloat(item.rate.rate || 0); // Convert to BDT
+        } else {
+            totalBdt += price; // Already in BDT
+        }
+    });
+    const totalPayInHotel = totalBdt - item.total_advance;
     try {
         const response = await fetch(route('reservation.pdf'), {
             method: 'POST',
@@ -412,11 +424,33 @@ const handleDownload = async (item) => {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             },
             body: JSON.stringify({
+                obeo_sl: item.obeo_sl,
+                reservation_no:item.reservation_no,
                 guest_name: item.guest_name,
                 check_in: item.check_in,
                 check_out: item.check_out,
+                reservation_date:item.reservation_date,
+                hotelName: item.hotel.hotelName,
+                email:item.email,
+                phone:item.phone,
+                request:item.request,
+                comment:item.comment,
+                rooms:item.rooms,
+                total_adult:item.total_adult,
+                children:item.children,
+                total_advance:item.total_advance,
+                rate:item.rate.rate,
+                currency:item.currency.currency,
+                payment_method:item.payment_method.payment,
+                source:item.source.source,
+                total_night: item.rooms[0].total_night,
+                totalUsd: totalUsd.toFixed(2),
+                totalBdt: totalBdt.toFixed(2),
+                totalPayInHotel: totalPayInHotel,
             }),
+
         });
+
 
         if (!response.ok) {
             throw new Error('Failed to fetch PDF');
@@ -427,7 +461,7 @@ const handleDownload = async (item) => {
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'reservation.pdf'; // or dynamically set name from response headers
+        a.download = `${item.guest_name}.pdf`; // or dynamically set name from response headers
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -454,7 +488,6 @@ const handleDownload = async (item) => {
 
                     Go Back
                 </Link>
-
                 <Link href="/dashboard/reservations/today-added-reservations" class="mb-4 text-white bg-cyan-950 hover:bg-blue-700 font-medium rounded-lg px-4 py-2 flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
@@ -1356,8 +1389,8 @@ const handleDownload = async (item) => {
                             <div v-if="item.children?.length">
                                <p> <strong>Children ({{item.children.length}}):</strong > (<span v-for="child in item.children" :key="child.id"> {{ child.age }}, </span>)</p>
                             </div>
-                            <p><strong>Total Advance:</strong> {{ item.total_advance }}</p>
-                            <p><strong>Exchange Rate:</strong> {{ item.rate?.rate }} {{ item.currency?.currency }}</p>
+                            <p><strong>Total Advance:</strong> {{ item.total_advance }} {{ item.currency?.currency }}</p>
+                            <p><strong>Exchange Rate:</strong> {{ item.rate?.rate }} Tk</p>
                             <p><strong>Payment Method:</strong>  {{ item.payment_method.payment }}</p>
                             <p><strong>Source:</strong> {{ item.source.source }}</p>
                         </div>
@@ -1367,13 +1400,19 @@ const handleDownload = async (item) => {
                 <template #item-actions="item">
                     <div class="flex gap-2">
                         <button @click=" handleDownload(item)">
-                            Download PDF
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
                         </button>
-                        <button @click="handleEdit(item)" class="bg-yellow-400 text-white px-2 py-1 rounded text-sm hover:bg-yellow-500">
-                            Edit
+                        <button @click="handleEdit(item)" class=" text-white  rounded text-sm ">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-blue-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                            </svg>
                         </button>
-                        <button @click="handleDelete(item.id)" class="bg-red-500 text-white px-2 py-1 rounded text-sm hover:bg-red-600">
-                            Delete
+                        <button @click="handleDelete(item.id)" class=" text-white  rounded text-sm ">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-red-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
                         </button>
                     </div>
                 </template>

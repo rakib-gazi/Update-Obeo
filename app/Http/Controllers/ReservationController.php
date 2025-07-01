@@ -522,7 +522,31 @@ class ReservationController extends Controller
     {
         Log::info('PDF download request received', $request->all());
 
-        $data = $request->only(['guest_name', 'check_in', 'check_out']); // optional
+        $data = $request->only([
+            'obeo_sl',
+            'reservation_no',
+            'guest_name',
+            'check_in',
+            'check_out',
+            'reservation_date',
+            'hotelName',
+            'email',
+            'phone',
+            'request',
+            'comment',
+            'rooms',
+            'total_adult',
+            'children',
+            'total_advance',
+            'rate',
+            'currency',
+            'payment_method',
+            'source',
+            'total_night',
+            'totalUsd',
+            'totalBdt',
+            'totalPayInHotel'
+        ]);
 
         try {
             $html = view('pdf.reservationCopy', $data)->render();
@@ -531,12 +555,10 @@ class ReservationController extends Controller
 
             Browsershot::html($html)
                 ->format('A4')
-                ->margins(10, 10, 10, 10)
                 ->showBackground()
                 ->save($path);
-
             return response()->download($path)->deleteFileAfterSend(true);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('PDF generation failed', ['message' => $e->getMessage()]);
             return response()->json(['error' => 'PDF generation failed'], 500);
         }
