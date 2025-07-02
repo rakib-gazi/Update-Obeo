@@ -45,7 +45,7 @@
             <h3 class="text-lg font-lg text-cyan-950">{{$hotelName}}</h3>
         </div>
     </div>
-    <!-- Reservation1 information -->
+    <!-- Reservation information -->
     <div class="rounded-2xl bg-white shadow-md mt-2">
         <h1 class="bg-[#9f825c21] py-1 text-black text-center rounded-t-2xl text-lg font-semibold ">Reservation Information</h1>
         <div class="p-4  grid grid-cols-3  gap-2">
@@ -139,27 +139,28 @@
                 $totalNight = $room['total_night'];
                 $totalPrice = (float)$room['total_price'];
                 $rate = (float) $rate;
-
+                $baseRateCount = $totalRoom * $totalNight;
                 // currency is nested array too:
                 $currency = isset($room['currency']['currency']) ??  null;
 
                 $totalPriceInBdt = $totalPrice * $rate;
-                $totalRoomPrice = $totalRoom * $totalPriceInBdt;
+                $totalBasePriceForRoom = $totalPriceInBdt/$baseRateCount;
+                $totalRoomPrice = $totalRoom * $totalBasePriceForRoom;
                 $totalNightPrice= $totalRoomPrice * $totalNight;
             @endphp
             <div class="px-4 py-2">
                 <div class="flex justify-between">
                     <h2 class="text-md font-medium mb-1 text-black">{{$roomName}} ({{$totalRoom}})</h2>
-                    <h2 class="text-md font-medium mb-1 text-black"><span class="text-xs">({{$totalRoom}} * {{$totalPriceInBdt}})</span> {{$totalRoomPrice}} TK</h2>
+                    <h2 class="text-md font-medium mb-1 text-black"><span class="text-xs">({{$totalRoom}} * {{number_format($totalBasePriceForRoom, 2)}})</span> {{number_format($totalRoomPrice, 2)}} TK</h2>
                 </div>
                 <div class="flex justify-between">
                     <p class="text-sm  text-black">Total Night ({{$totalNight}}) </p>
-                    <h2 class="text-sm  mb-1 text-black"><span class="text-xs">({{$totalNight}} * {{$totalRoomPrice}})</span> {{$totalNightPrice}} TK</h2>
+                    <h2 class="text-sm  mb-1 text-black"><span class="text-xs">({{$totalNight}} * {{number_format($totalRoomPrice, 2)}})</span> {{number_format($totalNightPrice, 2)}} TK</h2>
                 </div>
                 <hr class="text-black font-bold border ">
                 <div class="flex justify-between">
                     <p class="text-md font-semibold">Total Amount </p>
-                    <h2 class="text-md font-semibold mb-1">{{$totalNightPrice}} TK</h2>
+                    <h2 class="text-md font-semibold mb-1">{{number_format($totalNightPrice, 2)}} TK</h2>
                 </div>
             </div>
         @endforeach

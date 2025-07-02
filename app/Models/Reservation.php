@@ -27,6 +27,11 @@ class Reservation extends Model
         'request',
         'comment',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function hotel() {
         return $this->belongsTo(Hotel::class);
     }

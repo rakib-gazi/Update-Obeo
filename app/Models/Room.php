@@ -15,7 +15,7 @@ class Room extends Model
         'currency_id',
     ];
     public function reservations() {
-        return $this->belongsToMany(Reservation1::class, 'reservation_rooms');
+        return $this->belongsToMany(Reservation::class, 'reservation_rooms');
     }
     public function currency()
     {

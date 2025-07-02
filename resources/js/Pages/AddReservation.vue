@@ -23,7 +23,7 @@ const formHotels = ref(usePage().props.hotels);
 const formRates = ref(usePage().props.rates);
 // currency input filed data
 const formCurrencies = ref(usePage().props.currencies);
-// Reservation1 Source input filed data
+// Reservation Source input filed data
 const formSources = ref(usePage().props.sources);
 // Payment Method input filed data
 const formPayments = ref(usePage().props.payments);
@@ -259,7 +259,7 @@ const handleSubmit = () => {
         onSuccess: () => {
             Swal.fire({
                 icon: 'success',
-                title: 'Reservation1 added successfully',
+                title: 'Reservation added successfully',
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -640,7 +640,7 @@ const getRoomError = (index, field) => {
                             </div>
                             <div v-if="reservationData.errors.currency_id" class="text-red-500 text-sm pt-2">{{ reservationData.errors.currency_id }}</div>
                         </div>
-                        <!-- Reservation1 Source -->
+                        <!-- Reservation Source -->
                         <div>
                             <div>
                                 <Combobox v-model="selectedSource">

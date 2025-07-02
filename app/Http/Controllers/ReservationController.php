@@ -109,12 +109,7 @@ class ReservationController extends Controller
             'rooms.*.total_price' => 'required|numeric|min:0',
             'rooms.*.currency_id' => 'required|exists:currencies,id',
         ],$messages);
-        Log::info('Validated reservation data', $data);
-        Log::info('User ID:', ['user_id' => $data['user_id'] ?? 'NULL']);
-        Log::info('Creating reservation with:', [
-            'user_id' => $data['user_id'],
-            'full_data' => $data
-        ]);
+
 
         DB::beginTransaction();
         try{
@@ -191,6 +186,7 @@ class ReservationController extends Controller
         $payments = PaymentMethod::select('id', 'payment')->get();
         $status = ReservationStatus::select('id', 'status')->get();
         $reservations = Reservation::with([
+            'user:id,fullName',
             'reservation_status:id,status',
             'hotel:id,hotelName',
             'rate:id,rate',
@@ -242,6 +238,7 @@ class ReservationController extends Controller
         $sources = Source::select('id','source')->get();
         $payments = PaymentMethod::select('id', 'payment')->get();
         $reservations = Reservation::whereDate('created_at', Carbon::today())->with([
+            'user:id,fullName',
             'reservation_status:id,status',
             'hotel:id,hotelName',
             'rate:id,rate',
@@ -313,6 +310,7 @@ class ReservationController extends Controller
         ];
 
         $data = $request->validate([
+            'user_id' => 'required',
             'status_id' => 'nullable|exists:reservation_statuses,id',
             'reservation_no' => 'required|regex:/^\d+$/|unique:reservations,reservation_no,' . $id,
             'check_in' => 'required|date',
@@ -342,7 +340,6 @@ class ReservationController extends Controller
             'rooms.*.total_price' => 'required|numeric|min:0',
             'rooms.*.currency_id' => 'required|exists:currencies,id',
         ], $messages);
-
         DB::beginTransaction();
         try {
             $reservation = Reservation::findOrFail($id);

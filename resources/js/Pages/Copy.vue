@@ -19,7 +19,7 @@ import obeologo from '../../images/obeologo.png';
                     <h3 class="text-lg font-lg text-cyan-950">Hotel Royal Raj International</h3>
                 </div>
             </div>
-            <!-- Reservation1 information -->
+            <!-- Reservation information -->
             <div class="rounded-2xl bg-white shadow-md mt-2">
                 <h1 class="bg-[#9f825c21] py-1 text-black text-center rounded-t-2xl text-lg font-bold ">Reservation Information</h1>
                 <div class="p-4  grid grid-cols-3  gap-2">
