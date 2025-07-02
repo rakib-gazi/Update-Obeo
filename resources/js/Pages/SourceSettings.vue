@@ -45,7 +45,7 @@ const handleSubmit = () => {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Reservation Source updated successfully',
+                    title: 'Reservation1 Source updated successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -59,7 +59,7 @@ const handleSubmit = () => {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Reservation Source added successfully',
+                    title: 'Reservation1 Source added successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -95,7 +95,7 @@ const Toast = Swal.mixin({
 const handleDelete = (id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This Reservation Source will be deleted permanently!",
+        text: "This Reservation1 Source will be deleted permanently!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -106,7 +106,7 @@ const handleDelete = (id) => {
             router.get(`/dashboard/settings/delete-source/${id}`)
             Toast.fire({
                 icon: "warning",
-                title: "Reservation Source Deleted successfully"
+                title: "Reservation1 Source Deleted successfully"
             });
         }
     });
@@ -114,7 +114,7 @@ const handleDelete = (id) => {
 
 // Table Headers
 const tableHeaders = [
-    { text: 'Reservation Source', value: 'source' },
+    { text: 'Reservation1 Source', value: 'source' },
     { text: 'Actions', value: 'actions' },
 ];
 </script>
@@ -145,7 +145,7 @@ const tableHeaders = [
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
                     <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
-                            {{ isEditMode ? 'Edit Reservation Source' : 'Add Reservation Source' }}
+                            {{ isEditMode ? 'Edit Reservation1 Source' : 'Add Reservation1 Source' }}
                         </DialogTitle>
 
                         <form @submit.prevent="handleSubmit" class="space-y-3">

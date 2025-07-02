@@ -15,14 +15,15 @@ import dayjs from 'dayjs';
 import Swal from "sweetalert2";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
-
+const finduser = usePage().props.auth.user;
+const loggedUserId = finduser ? finduser.id : null;
 // hotels input filed data
 const formHotels = ref(usePage().props.hotels);
 // // Exchange Rate input filed data
 const formRates = ref(usePage().props.rates);
 // currency input filed data
 const formCurrencies = ref(usePage().props.currencies);
-// Reservation Source input filed data
+// Reservation1 Source input filed data
 const formSources = ref(usePage().props.sources);
 // Payment Method input filed data
 const formPayments = ref(usePage().props.payments);
@@ -150,6 +151,7 @@ function handleEnter() {
 
 
 const reservationData = useForm({
+    user_id: loggedUserId,
     reservation_no: '',
     check_in: null,
     check_out: null,
@@ -252,11 +254,12 @@ const handleSubmit = () => {
         ...room,
         currency_id: room.currency_id?.id || null
     }));
+    console.log(reservationData);
     reservationData.post('/dashboard/add-reservation', {
         onSuccess: () => {
             Swal.fire({
                 icon: 'success',
-                title: 'Reservation added successfully',
+                title: 'Reservation1 added successfully',
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -637,7 +640,7 @@ const getRoomError = (index, field) => {
                             </div>
                             <div v-if="reservationData.errors.currency_id" class="text-red-500 text-sm pt-2">{{ reservationData.errors.currency_id }}</div>
                         </div>
-                        <!-- Reservation Source -->
+                        <!-- Reservation1 Source -->
                         <div>
                             <div>
                                 <Combobox v-model="selectedSource">

@@ -1,8 +1,7 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { router, useForm, usePage,Link } from "@inertiajs/vue3";
-import {computed, ref, watchEffect, nextTick, onMounted } from 'vue';
-import html2pdf from 'html2pdf.js';
+import {computed, ref, watchEffect } from 'vue';
 import { route } from 'ziggy-js';
 import Swal from "sweetalert2";
 import {
@@ -18,10 +17,9 @@ import {
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {CheckIcon, ChevronUpDownIcon} from "@heroicons/vue/20/solid/index.js";
-import obeologo from "../../images/obeologo.png";
-import booking from "../../images/booking.png";
 dayjs.extend(customParseFormat);
-
+const finduser = usePage().props.auth.user;
+const loggedUserId = finduser ? finduser.id : null;
 const userData = ref(usePage().props.reservations);
 const formHotels = ref(usePage().props.hotels);
 const formRates = ref(usePage().props.rates);
@@ -140,6 +138,7 @@ const closeModal = () => {
 };
 // Form
 const reservationData = useForm({
+    user_id: loggedUserId,
     reservation_no: '',
     check_in: null,
     check_out: null,
@@ -245,7 +244,7 @@ const Toast = Swal.mixin({
 const handleDelete = (id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This Reservation will be deleted permanently!",
+        text: "This Reservation1 will be deleted permanently!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -256,7 +255,7 @@ const handleDelete = (id) => {
             router.get(`/dashboard/delete-reservation/${id}`)
             Toast.fire({
                 icon: "warning",
-                title: "Reservation Deleted successfully"
+                title: "Reservation1 Deleted successfully"
             });
         }
     });
@@ -376,7 +375,7 @@ const handleSubmit = () => {
         onSuccess: () => {
             Swal.fire({
                 icon: 'success',
-                title: 'Reservation updated successfully',
+                title: 'Reservation1 updated successfully',
                 showConfirmButton: false,
                 timer: 1000
             });
@@ -849,7 +848,7 @@ const isDownloading = (id) => downloadLoadingIds.value.includes(id);
                                     </div>
                                     <div v-if="reservationData.errors.currency_id" class="text-red-500 text-sm pt-2">{{ reservationData.errors.currency_id }}</div>
                                 </div>
-                                <!-- Reservation Source -->
+                                <!-- Reservation1 Source -->
                                 <div>
                                     <div>
                                         <Combobox v-model="selectedSource">
@@ -1349,7 +1348,7 @@ const isDownloading = (id) => downloadLoadingIds.value.includes(id);
                 </template>
                 <template #item-status_id="item">
                     <div class="text-sm font-semibold">
-                        <!-- Reservation Status -->
+                        <!-- Reservation1 Status -->
                         <select
                             :value="item.status_id"
                             @change="onStatusChange($event, item.id)"

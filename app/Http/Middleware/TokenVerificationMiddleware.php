@@ -3,9 +3,12 @@
 namespace App\Http\Middleware;
 
 use App\Helper\JWTToken;
+use App\Models\User;
 use Closure;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class TokenVerificationMiddleware
@@ -30,6 +33,16 @@ class TokenVerificationMiddleware
             }
             else{
                 $request->headers->set('email', $result);
+                $user = User::where('email', $result)->first();
+
+                if (!$user) {
+                    return redirect('/')->cookie('token', '', -1);
+                }
+
+                // Set user into Laravel's auth system
+                Auth::login($user);
+
+
                 return $next($request);
             }
         }catch (ExpiredException $e) {

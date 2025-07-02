@@ -10,7 +10,7 @@ class Child extends Model
     protected $fillable = ['age'];
     protected $hidden = ['created_at', 'updated_at',];
     public function reservations() {
-        return $this->belongsToMany(Reservation::class, 'reservation_children');
+        return $this->belongsToMany(Reservation1::class, 'reservation_children');
     }
 
 }

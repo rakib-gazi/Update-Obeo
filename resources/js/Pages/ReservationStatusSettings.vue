@@ -45,7 +45,7 @@ const handleSubmit = () => {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Reservation Status updated successfully',
+                    title: 'Reservation1 Status updated successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -59,7 +59,7 @@ const handleSubmit = () => {
             onSuccess: () => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Reservation Status added successfully',
+                    title: 'Reservation1 Status added successfully',
                     showConfirmButton: false,
                     timer: 1000
                 });
@@ -95,7 +95,7 @@ const Toast = Swal.mixin({
 const handleDelete = (id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This Reservation Status will be deleted permanently!",
+        text: "This Reservation1 Status will be deleted permanently!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -106,7 +106,7 @@ const handleDelete = (id) => {
             router.get(`/dashboard/settings/delete-reservation-status/${id}`)
             Toast.fire({
                 icon: "warning",
-                title: "Reservation Status Deleted successfully"
+                title: "Reservation1 Status Deleted successfully"
             });
         }
     });
@@ -114,7 +114,7 @@ const handleDelete = (id) => {
 
 // Table Headers
 const tableHeaders = [
-    { text: 'Reservation Status', value: 'status' },
+    { text: 'Reservation1 Status', value: 'status' },
     { text: 'Actions', value: 'actions' },
 ];
 </script>
@@ -145,7 +145,7 @@ const tableHeaders = [
                     <DialogOverlay class="fixed inset-0 bg-black opacity-30" />
                     <div class="relative bg-white w-full max-w-lg p-6 rounded-xl shadow-xl z-50">
                         <DialogTitle class="text-xl font-semibold mb-4">
-                            {{ isEditMode ? 'Edit Reservation Status' : 'Add Reservation Status' }}
+                            {{ isEditMode ? 'Edit Reservation1 Status' : 'Add Reservation1 Status' }}
                         </DialogTitle>
 
                         <form @submit.prevent="handleSubmit" class="space-y-3">

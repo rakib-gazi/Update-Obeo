@@ -270,9 +270,9 @@ class SettingsController extends Controller
             $deleted =  Source::where('id', $id)->delete();
             $error = "";
             if(!$deleted){
-                $error = "Reservation Source not found or could not be deleted";
+                $error = "Reservation1 Source not found or could not be deleted";
             }
-            $data = ['message' => 'Reservation Source Deleted Successfully', 'status' => true, 'error' => $error];
+            $data = ['message' => 'Reservation1 Source Deleted Successfully', 'status' => true, 'error' => $error];
             return redirect()->route('settings/source-settings')->with($data );
         }
         catch(Exception $e){
@@ -392,9 +392,9 @@ class SettingsController extends Controller
             $deleted =  ReservationStatus::where('id', $id)->delete();
             $error = "";
             if(!$deleted){
-                $error = "Reservation Status not found or could not be deleted";
+                $error = "Reservation1 Status not found or could not be deleted";
             }
-            $data = ['message' => 'Reservation Status Deleted Successfully', 'status' => true, 'error' => $error];
+            $data = ['message' => 'Reservation1 Status Deleted Successfully', 'status' => true, 'error' => $error];
             return redirect()->route('settings/reservation-status-settings')->with($data );
         }
         catch(Exception $e){

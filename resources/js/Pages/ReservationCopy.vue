@@ -183,7 +183,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
                 </table>
             </div>
 
-            <!-- Reservation Details -->
+            <!-- Reservation1 Details -->
             <div class="grid grid-cols-2 gap-4">
                 <!-- Left Column -->
                 <div>

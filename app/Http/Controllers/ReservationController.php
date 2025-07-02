@@ -79,6 +79,7 @@ class ReservationController extends Controller
             'rooms.*.currency_id.required' => 'Currency required.',
         ];
         $data = $request->validate([
+            'user_id' => 'required',
             'status_id' => 'nullable|exists:reservation_statuses,id',
             'reservation_no' => 'required|regex:/^\d+$/|unique:reservations,reservation_no',
             'check_in' => 'required|date',
@@ -108,6 +109,13 @@ class ReservationController extends Controller
             'rooms.*.total_price' => 'required|numeric|min:0',
             'rooms.*.currency_id' => 'required|exists:currencies,id',
         ],$messages);
+        Log::info('Validated reservation data', $data);
+        Log::info('User ID:', ['user_id' => $data['user_id'] ?? 'NULL']);
+        Log::info('Creating reservation with:', [
+            'user_id' => $data['user_id'],
+            'full_data' => $data
+        ]);
+
         DB::beginTransaction();
         try{
             do {
@@ -118,6 +126,7 @@ class ReservationController extends Controller
             } while (Reservation::where('obeo_sl', $obeoSL)->exists());
 
             $reservation = Reservation::create([
+                'user_id' => (int) $data['user_id'] ?? null,
                 'obeo_sl' => $obeoSL,
                 'status_id' => $data['status_id'] ?? null,
                 'reservation_no' => $data['reservation_no'],
@@ -339,6 +348,7 @@ class ReservationController extends Controller
             $reservation = Reservation::findOrFail($id);
 
             $reservation->update([
+                'user_id' => $data['user_id'] ?? null,
                 'status_id' => $data['status_id'] ?? null,
                 'reservation_no' => $data['reservation_no'],
                 'check_in' => $data['check_in'],

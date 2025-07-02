@@ -45,7 +45,7 @@
             <h3 class="text-lg font-lg text-cyan-950">{{$hotelName}}</h3>
         </div>
     </div>
-    <!-- Reservation information -->
+    <!-- Reservation1 information -->
     <div class="rounded-2xl bg-white shadow-md mt-2">
         <h1 class="bg-[#9f825c21] py-1 text-black text-center rounded-t-2xl text-lg font-semibold ">Reservation Information</h1>
         <div class="p-4  grid grid-cols-3  gap-2">

@@ -238,7 +238,7 @@ const Toast = Swal.mixin({
 const handleDelete = (id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This Reservation will be deleted permanently!",
+        text: "This Reservation1 will be deleted permanently!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -249,7 +249,7 @@ const handleDelete = (id) => {
             router.get(`/dashboard/delete-reservation/${id}`)
             Toast.fire({
                 icon: "warning",
-                title: "Reservation Deleted successfully"
+                title: "Reservation1 Deleted successfully"
             });
         }
     });
@@ -368,7 +368,7 @@ const handleSubmit = () => {
         onSuccess: () => {
             Swal.fire({
                 icon: 'success',
-                title: 'Reservation updated successfully',
+                title: 'Reservation1 updated successfully',
                 showConfirmButton: false,
                 timer: 1000
             });
@@ -740,7 +740,7 @@ const handleSubmit = () => {
                                     </div>
                                     <div v-if="reservationData.errors.currency_id" class="text-red-500 text-sm pt-2">{{ reservationData.errors.currency_id }}</div>
                                 </div>
-                                <!-- Reservation Source -->
+                                <!-- Reservation1 Source -->
                                 <div>
                                     <div>
                                         <Combobox v-model="selectedSource">
