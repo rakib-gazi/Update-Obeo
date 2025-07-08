@@ -562,6 +562,7 @@ class ReservationController extends Controller
             Browsershot::html($html)
                 ->format('A4')
                 ->showBackground()
+                ->margins(8, 6, 10, 6)
                 ->save($path);
             return response()->download($path)->deleteFileAfterSend(true);
         } catch (Exception $e) {

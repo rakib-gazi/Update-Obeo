@@ -28,7 +28,6 @@ const formSources = ref(usePage().props.sources);
 const formPayments = ref(usePage().props.payments);
 const formStatus = ref(usePage().props.status);
 const reservationStatus = formStatus.value;
-console.log(reservationStatus)
 const isModalOpen = ref(false);
 const isSubmitting = ref(false);
 let editingUserId = null;
@@ -415,17 +414,26 @@ const handleDownload = async (item) => {
     let totalUsd = 0;
     let totalBdt = 0;
 
-    item.rooms.forEach(room => {
-        const price = parseFloat(room.total_price) || 0;
-        const currency = room.currency?.currency;
+    const allInUSD = item.rooms.every(room => room.currency?.currency === 'USD');
 
-        if (currency === 'USD') {
+    if (allInUSD) {
+        item.rooms.forEach(room => {
+            const price = parseFloat(room.total_price) || 0;
             totalUsd += price;
-            totalBdt += price * parseFloat(item.rate.rate || 0); // Convert to BDT
-        } else {
-            totalBdt += price; // Already in BDT
-        }
-    });
+        });
+        totalBdt = totalUsd * parseFloat(item.rate.rate || 0);
+    } else {
+        item.rooms.forEach(room => {
+            const price = parseFloat(room.total_price) || 0;
+            const currency = room.currency?.currency;
+
+            if (currency === 'USD') {
+                totalBdt += price * parseFloat(item.rate.rate || 0); // convert to BDT
+            } else {
+                totalBdt += price; // already in BDT
+            }
+        });
+    }
     const totalPayInHotel = totalBdt - item.total_advance;
     try {
         const response = await fetch(route('reservation.pdf'), {

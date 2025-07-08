@@ -86,8 +86,14 @@
                 <h2 class="text-md  mb-1 text-black">{{$total_adult}} Adults</h2>
             </div>
             <div>
-                <p class="text-xs font-semibold">Total Children</p>
-                <h2 class="text-md  mb-1 text-black">{{ is_array($children) ? count($children) : 'N/A' }}</h2>
+                <p class="text-xs font-semibold">Childrens & Age ({{ count($children) }})</p>
+                <h2 class="text-md  mb-1 text-black">
+                    @if (is_array($children) && count($children) > 0)
+                         {{ collect($children)->pluck('age')->implode(', ') }} years
+                    @else
+                         N/A
+                    @endif
+                </h2>
             </div>
             <div>
                 <p class="text-xs font-semibold">Phone Number</p>
@@ -134,16 +140,16 @@
         <h1 class="bg-[#9f825c21] py-1 text-black text-center rounded-t-2xl text-lg font-semibold ">Room Wise Information & Price Details</h1>
         @foreach($rooms as $room)
             @php
-                $roomName = $room['name'];  // access as array
+                $roomName = $room['name'];
                 $totalRoom = $room['total_room'];
                 $totalNight = $room['total_night'];
                 $totalPrice = (float)$room['total_price'];
                 $rate = (float) $rate;
                 $baseRateCount = $totalRoom * $totalNight;
                 // currency is nested array too:
-                $currency = isset($room['currency']['currency']) ??  null;
+                $currency = $room['currency']['currency'];
 
-                $totalPriceInBdt = $totalPrice * $rate;
+                $totalPriceInBdt = $currency === 'USD' ?  $totalPrice * $rate : $totalPrice;
                 $totalBasePriceForRoom = $totalPriceInBdt/$baseRateCount;
                 $totalRoomPrice = $totalRoom * $totalBasePriceForRoom;
                 $totalNightPrice= $totalRoomPrice * $totalNight;
